@@ -65,12 +65,10 @@ public final class ListChallenges {
     int right = list.size() - 1;
 
     while (left < right) {
-      // Swap elements at left and right
+      // Swap elements at left and right using set() for O(1) swap
       T temp = list.get(left);
-      list.remove(left);
-      list.add(left, list.get(right - 1));
-      list.remove(right);
-      list.add(right, temp);
+      list.set(left, list.get(right));
+      list.set(right, temp);
       left++;
       right--;
     }
@@ -186,10 +184,9 @@ public final class ListChallenges {
 
       if (isDifferent) {
         writeIndex++;
-        // Move element to write position
+        // Move element to write position using set() for O(1) operation
         if (writeIndex != readIndex) {
-          list.remove(writeIndex);
-          list.add(writeIndex, current);
+          list.set(writeIndex, current);
         }
       }
     }
@@ -496,22 +493,36 @@ public final class ListChallenges {
       return;
     }
 
-    // Collect elements that will move to front
-    MyList<T> tail = new MyArrayList<>();
-    int pivotIndex = list.size() - k;
+    // Three-reversal technique for O(n) time, O(1) space rotation:
+    // To rotate right by k:
+    // 1. Reverse entire list
+    // 2. Reverse first k elements
+    // 3. Reverse remaining n-k elements
+    //
+    // Example: [1,2,3,4,5] rotate right by 2
+    // Step 1: [5,4,3,2,1]
+    // Step 2: [4,5,3,2,1]
+    // Step 3: [4,5,1,2,3]
+    int n = list.size();
+    reverseRange(list, 0, n - 1);
+    reverseRange(list, 0, k - 1);
+    reverseRange(list, k, n - 1);
+  }
 
-    for (int i = pivotIndex; i < list.size(); i++) {
-      tail.add(list.get(i));
-    }
-
-    // Remove elements from end
-    for (int i = 0; i < k; i++) {
-      list.remove(list.size() - 1);
-    }
-
-    // Insert at beginning
-    for (int i = tail.size() - 1; i >= 0; i--) {
-      list.add(0, tail.get(i));
+  /**
+   * Helper method to reverse a range of elements in a list.
+   *
+   * @param list the list to modify
+   * @param start start index (inclusive)
+   * @param end end index (inclusive)
+   */
+  private static <T> void reverseRange(MyList<T> list, int start, int end) {
+    while (start < end) {
+      T temp = list.get(start);
+      list.set(start, list.get(end));
+      list.set(end, temp);
+      start++;
+      end--;
     }
   }
 
@@ -771,19 +782,8 @@ public final class ListChallenges {
       int start = group * k;
       int end = start + k - 1;
 
-      // Reverse elements from start to end
-      while (start < end) {
-        T temp = list.get(start);
-        T endVal = list.get(end);
-
-        list.remove(start);
-        list.add(start, endVal);
-        list.remove(end);
-        list.add(end, temp);
-
-        start++;
-        end--;
-      }
+      // Reverse elements from start to end using set() for O(1) swaps
+      reverseRange(list, start, end);
     }
   }
 

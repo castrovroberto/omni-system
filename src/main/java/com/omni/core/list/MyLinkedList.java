@@ -209,6 +209,71 @@ public class MyLinkedList<T> implements MyList<T> {
     return remove(size - 1);
   }
 
+  /**
+   * Returns the first element of the list without removing it.
+   *
+   * @return the first element
+   * @throws NoSuchElementException if the list is empty
+   */
+  public T getFirst() {
+    if (isEmpty()) {
+      throw new NoSuchElementException("List is empty");
+    }
+    return head.next.value;
+  }
+
+  /**
+   * Returns the last element of the list without removing it.
+   *
+   * @return the last element
+   * @throws NoSuchElementException if the list is empty
+   */
+  public T getLast() {
+    if (isEmpty()) {
+      throw new NoSuchElementException("List is empty");
+    }
+    return tail.prev.value;
+  }
+
+  @Override
+  public boolean contains(T element) {
+    return indexOf(element) >= 0;
+  }
+
+  @Override
+  public int indexOf(T element) {
+    Node<T> current = head.next;
+    int index = 0;
+    while (current != tail) {
+      if (element == null ? current.value == null : element.equals(current.value)) {
+        return index;
+      }
+      current = current.next;
+      index++;
+    }
+    return -1;
+  }
+
+  @Override
+  public T set(int index, T element) {
+    Objects.checkIndex(index, size);
+    Node<T> node = getNode(index);
+    T oldValue = node.value;
+    node.value = element;
+    return oldValue;
+  }
+
+  @Override
+  public Object[] toArray() {
+    Object[] result = new Object[size];
+    Node<T> current = head.next;
+    for (int i = 0; i < size; i++) {
+      result[i] = current.value;
+      current = current.next;
+    }
+    return result;
+  }
+
   @Override
   public Iterator<T> iterator() {
     return new MyLinkedListIterator();

@@ -63,4 +63,37 @@ public interface MyList<T> extends Iterable<T> {
 
   /** Removes all elements from the list. After this call, size() returns 0. */
   void clear();
+
+  /**
+   * Returns true if this list contains the specified element.
+   *
+   * @param element element whose presence is to be tested (may be null)
+   * @return true if this list contains the specified element
+   */
+  boolean contains(T element);
+
+  /**
+   * Returns the index of the first occurrence of the specified element, or -1 if not found.
+   *
+   * @param element element to search for (may be null)
+   * @return the index of the first occurrence, or -1 if not found
+   */
+  int indexOf(T element);
+
+  /**
+   * Replaces the element at the specified position with the specified element.
+   *
+   * @param index index of the element to replace (0 <= index < size)
+   * @param element element to be stored at the specified position
+   * @return the element previously at the specified position
+   * @throws IndexOutOfBoundsException if index < 0 or index >= size
+   */
+  T set(int index, T element);
+
+  /**
+   * Returns an array containing all elements in this list in proper sequence.
+   *
+   * @return an array containing all elements in this list
+   */
+  Object[] toArray();
 }

@@ -106,4 +106,16 @@ public class LogManager {
   public int getAlertCount() {
     return alertQueue.size();
   }
+
+  /**
+   * Resets the singleton instance. Package-private for testing purposes only.
+   *
+   * <p>This method should only be used in test code to ensure a fresh LogManager instance between
+   * tests. Using this in production code is not recommended.
+   */
+  static void resetInstance() {
+    synchronized (LogManager.class) {
+      instance = null;
+    }
+  }
 }

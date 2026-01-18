@@ -149,13 +149,36 @@ public class MyArrayList<T> implements MyList<T> {
    * @param element the element to search for (may be null)
    * @return true if element is present, false otherwise
    */
+  @Override
   public boolean contains(T element) {
+    return indexOf(element) >= 0;
+  }
+
+  @Override
+  public int indexOf(T element) {
     for (int i = 0; i < size; i++) {
       if (element == null ? elements[i] == null : element.equals(elements[i])) {
-        return true;
+        return i;
       }
     }
-    return false;
+    return -1;
+  }
+
+  @Override
+  public T set(int index, T element) {
+    if (index < 0 || index >= size) {
+      throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+    }
+    T oldValue = elements[index];
+    elements[index] = element;
+    return oldValue;
+  }
+
+  @Override
+  public Object[] toArray() {
+    Object[] result = new Object[size];
+    System.arraycopy(elements, 0, result, 0, size);
+    return result;
   }
 
   /**
