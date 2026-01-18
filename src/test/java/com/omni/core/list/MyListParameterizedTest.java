@@ -31,8 +31,7 @@ class MyListParameterizedTest {
   class BasicOperationsTests {
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Add element to empty list")
     void add_toEmptyList_addsElement(MyList<String> list) {
       list.add("first");
@@ -42,8 +41,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Add multiple elements maintains order")
     void add_multipleElements_maintainsOrder(MyList<String> list) {
       list.add("first");
@@ -57,8 +55,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Add at index inserts element correctly")
     void addAtIndex_insertsElement(MyList<String> list) {
       list.add("first");
@@ -72,8 +69,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Remove by index removes and returns element")
     void remove_removesAndReturnsElement(MyList<String> list) {
       list.add("first");
@@ -89,8 +85,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Clear removes all elements")
     void clear_removesAllElements(MyList<String> list) {
       list.add("first");
@@ -108,8 +103,7 @@ class MyListParameterizedTest {
   class NewInterfaceMethodsTests {
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Contains returns true for existing element")
     void contains_existingElement_returnsTrue(MyList<String> list) {
       list.add("first");
@@ -122,8 +116,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Contains returns false for missing element")
     void contains_missingElement_returnsFalse(MyList<String> list) {
       list.add("first");
@@ -134,8 +127,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Contains handles null elements")
     void contains_nullElement_works(MyList<String> list) {
       list.add("first");
@@ -147,8 +139,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("IndexOf returns correct index")
     void indexOf_existingElement_returnsIndex(MyList<String> list) {
       list.add("first");
@@ -161,8 +152,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("IndexOf returns -1 for missing element")
     void indexOf_missingElement_returnsMinusOne(MyList<String> list) {
       list.add("first");
@@ -173,8 +163,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("IndexOf returns first occurrence for duplicates")
     void indexOf_duplicates_returnsFirstIndex(MyList<String> list) {
       list.add("first");
@@ -185,8 +174,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Set replaces element and returns old value")
     void set_replacesElement_returnsOldValue(MyList<String> list) {
       list.add("first");
@@ -201,8 +189,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Set throws exception for invalid index")
     void set_invalidIndex_throwsException(MyList<String> list) {
       list.add("first");
@@ -213,8 +200,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("ToArray returns correct array")
     void toArray_returnsCorrectArray(MyList<String> list) {
       list.add("first");
@@ -230,8 +216,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("ToArray on empty list returns empty array")
     void toArray_emptyList_returnsEmptyArray(MyList<String> list) {
       Object[] array = list.toArray();
@@ -240,8 +225,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("ToArray returns independent copy")
     void toArray_returnsIndependentCopy(MyList<String> list) {
       list.add("first");
@@ -260,8 +244,7 @@ class MyListParameterizedTest {
   class EdgeCaseTests {
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Get with invalid index throws exception")
     void get_invalidIndex_throwsException(MyList<String> list) {
       list.add("first");
@@ -272,8 +255,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Remove with invalid index throws exception")
     void remove_invalidIndex_throwsException(MyList<String> list) {
       assertThrows(IndexOutOfBoundsException.class, () -> list.remove(0));
@@ -283,8 +265,7 @@ class MyListParameterizedTest {
     }
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#stringListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#stringListImplementations")
     @DisplayName("Single element list operations work")
     void singleElementList_operationsWork(MyList<String> list) {
       list.add("only");
@@ -305,8 +286,7 @@ class MyListParameterizedTest {
   class PerformanceTests {
 
     @ParameterizedTest(name = "{0}")
-    @MethodSource(
-        "com.omni.core.list.MyListParameterizedTest#integerListImplementations")
+    @MethodSource("com.omni.core.list.MyListParameterizedTest#integerListImplementations")
     @DisplayName("Large list operations work correctly")
     void largeList_operationsWork(MyList<Integer> list) {
       int count = 10_000;
