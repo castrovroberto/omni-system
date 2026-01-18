@@ -10,6 +10,18 @@ import java.util.NoSuchElementException;
  * <p>Provides O(1) access to elements by index and amortized O(1) appending. Supports dynamic
  * resizing by doubling capacity when full.
  *
+ * <pre>
+ *   Structure:
+ *
+ *   Index:   0   1   2   3   4   ...   Capacity-1
+ *          +---+---+---+---+---+-----+---+
+ *   Array: | A | B | C |   |   | ... |   |
+ *          +---+---+---+---+---+-----+---+
+ *                    ^                   ^
+ *                    |                   |
+ *                  Size=3             Capacity
+ * </pre>
+ *
  * @param <T> the type of elements in this list
  */
 public class MyArrayList<T> implements MyList<T> {
@@ -55,7 +67,18 @@ public class MyArrayList<T> implements MyList<T> {
       throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
     }
     ensureCapacity(size + 1);
-    // Shift elements right
+
+    // Shift elements right to make space
+    //
+    // Before: [A] [B] [C] [D] [ ]
+    //          0   1   2   3   4
+    //              ^ Insert 'X' at index 1
+    //
+    // Shift:  [A] [ ] [B] [C] [D]
+    //          0   1   2   3   4
+    //
+    // After:  [A] [X] [B] [C] [D]
+    //
     System.arraycopy(elements, index, elements, index + 1, size - index);
     elements[index] = element;
     size++;
@@ -76,7 +99,19 @@ public class MyArrayList<T> implements MyList<T> {
       throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
     }
     T removed = elements[index];
-    // Shift elements left
+
+    // Shift elements left to fill the gap
+    //
+    // Before: [A] [B] [C] [D]
+    //          0   1   2   3
+    //              ^ Remove index 1 ('B')
+    //
+    // Shift:  [A] [C] [D] [D]
+    //          0   1   2   3
+    //
+    // Null:   [A] [C] [D] [null]
+    //          0   1   2   3
+    //
     System.arraycopy(elements, index + 1, elements, index, size - index - 1);
     elements[--size] = null; // Help GC
     modCount++;
@@ -97,6 +132,9 @@ public class MyArrayList<T> implements MyList<T> {
   @SuppressWarnings("unchecked")
   public void clear() {
     // Null out all references to help GC
+    //
+    // [A] [B] [C]  --->  [null] [null] [null]
+    //
     for (int i = 0; i < size; i++) {
       elements[i] = null;
     }
@@ -128,6 +166,15 @@ public class MyArrayList<T> implements MyList<T> {
   @SuppressWarnings("unchecked")
   private void ensureCapacity(int minCapacity) {
     if (minCapacity > elements.length) {
+      // Resize Strategy: Double the capacity
+      //
+      // Old Array: [A] [B] [C] (Full)
+      //             +---+---+---+
+      //
+      // New Array: [A] [B] [C] [ ] [ ] [ ]
+      //             +---+---+---+---+---+---+
+      //             (Capacity * 2)
+      //
       int newCapacity = elements.length == 0 ? DEFAULT_CAPACITY : elements.length * 2;
       if (newCapacity < minCapacity) {
         newCapacity = minCapacity;

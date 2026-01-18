@@ -5,6 +5,21 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
+/**
+ * A custom implementation of a Doubly Linked List.
+ *
+ * <p>This implementation uses <b>Sentinel Nodes</b> (Head and Tail) to simplify boundary conditions
+ * (no need to check for null when adding/removing at ends).
+ *
+ * <pre>
+ *   Structure:
+ *
+ *      +------+       +--------+       +--------+       +------+
+ *      | HEAD | <---> | Node 0 | <---> | Node 1 | <---> | TAIL |
+ *      +------+       +--------+       +--------+       +------+
+ *     (Sentinel)                                       (Sentinel)
+ * </pre>
+ */
 public class MyLinkedList<T> implements MyList<T> {
 
   private static class Node<T> {
@@ -25,6 +40,13 @@ public class MyLinkedList<T> implements MyList<T> {
   private int modCount; // For fail-fast iterators
 
   public MyLinkedList() {
+    // Initialize Sentinel Nodes
+    //
+    //   +------+       +------+
+    //   | HEAD | ----> | TAIL |
+    //   |      | <---- |      |
+    //   +------+       +------+
+    //
     head = new Node<>(null, null, null); // Sentinel head node
     tail = new Node<>(null, head, null); // Sentinel tail node
     head.next = tail;
@@ -41,6 +63,16 @@ public class MyLinkedList<T> implements MyList<T> {
   public void add(int index, T element) {
     Objects.checkIndex(index, size + 1); // Allows index == size for appending
     Node<T> current = getNodeForInsertion(index);
+
+    // Insertion Logic:
+    // We are inserting 'newNode' BEFORE 'current'.
+    //
+    // 1. Create New Node
+    //    [current.prev] <--- [NewNode] ---> [current]
+    //
+    // 2. Link Neighbors to New Node
+    //    [current.prev] ---> [NewNode] <--- [current]
+    //
     Node<T> newNode = new Node<>(element, current.prev, current);
     current.prev.next = newNode;
     current.prev = newNode;
@@ -58,10 +90,22 @@ public class MyLinkedList<T> implements MyList<T> {
   public T remove(int index) {
     Objects.checkIndex(index, size);
     Node<T> nodeToRemove = getNode(index);
+
+    // Removal Logic:
+    //
+    //    [Prev] <---> [NodeToRemove] <---> [Next]
+    //
+    //    Step 1: Bypass NodeToRemove
+    //    [Prev] -------------------------> [Next]
+    //    [Prev] <------------------------- [Next]
+    //
     nodeToRemove.prev.next = nodeToRemove.next;
     nodeToRemove.next.prev = nodeToRemove.prev;
-    nodeToRemove.prev = null; // Help GC
-    nodeToRemove.next = null; // Help GC
+
+    // Step 2: Clear references to help GC
+    nodeToRemove.prev = null;
+    nodeToRemove.next = null;
+
     size--;
     modCount++;
     return nodeToRemove.value;
@@ -79,6 +123,8 @@ public class MyLinkedList<T> implements MyList<T> {
 
   @Override
   public void clear() {
+    // Reset to empty state
+    // [HEAD] <-> [TAIL]
     head.next = tail;
     tail.prev = head;
     size = 0;
@@ -86,7 +132,13 @@ public class MyLinkedList<T> implements MyList<T> {
   }
 
   private Node<T> getNode(int index) {
-    // Optimize traversal by starting from head or tail depending on index
+    // Optimization: Traversal Direction
+    //
+    //  Index: 0 ... size/2 ... size
+    //         |        |        |
+    //       Start    Split    Start
+    //     from HEAD          from TAIL
+    //
     if (index < size / 2) {
       Node<T> current = head.next;
       for (int i = 0; i < index; i++) {
@@ -162,6 +214,11 @@ public class MyLinkedList<T> implements MyList<T> {
     return new MyLinkedListIterator();
   }
 
+  /**
+   * Fail-fast iterator implementation.
+   *
+   * <p>Checks for concurrent modifications by comparing expectedModCount with the list's modCount.
+   */
   private class MyLinkedListIterator implements Iterator<T> {
     private Node<T> current = head.next;
     private Node<T> lastReturned = null;
