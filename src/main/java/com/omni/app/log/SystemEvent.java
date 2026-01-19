@@ -12,6 +12,7 @@ import java.util.Objects;
  */
 public final class SystemEvent {
 
+  /** Severity levels for system events. */
   public enum Severity {
     DEBUG,
     INFO,

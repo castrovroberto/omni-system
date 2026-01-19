@@ -2,9 +2,12 @@ package com.omni.core.algorithm.challenge;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.omni.app.log.Interval;
+import com.omni.app.log.SystemEvent;
 import com.omni.core.list.MyArrayList;
 import com.omni.core.list.MyLinkedList;
 import com.omni.core.list.MyList;
+import java.time.Instant;
 import java.util.Comparator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -1114,7 +1117,7 @@ class ListChallengesTest {
         lists.add(list2);
         lists.add(list3);
 
-        MyList<Integer> merged = ListChallenges.mergeKSortedLists(lists, null);
+        MyList<Integer> merged = ListChallenges.mergeKsSortedLists(lists, null);
 
         assertEquals(8, merged.size());
         assertEquals(1, merged.get(0));
@@ -1132,7 +1135,7 @@ class ListChallengesTest {
       void mergeKSortedLists_emptyInput_returnsEmpty() {
         MyList<MyList<Integer>> lists = new MyArrayList<>();
 
-        MyList<Integer> merged = ListChallenges.mergeKSortedLists(lists, null);
+        MyList<Integer> merged = ListChallenges.mergeKsSortedLists(lists, null);
 
         assertTrue(merged.isEmpty());
       }
@@ -1149,7 +1152,7 @@ class ListChallengesTest {
 
         lists.add(list1);
 
-        MyList<Integer> merged = ListChallenges.mergeKSortedLists(lists, null);
+        MyList<Integer> merged = ListChallenges.mergeKsSortedLists(lists, null);
 
         assertEquals(3, merged.size());
         assertEquals(1, merged.get(0));
@@ -1175,7 +1178,7 @@ class ListChallengesTest {
         lists.add(list2);
         lists.add(list3);
 
-        MyList<Integer> merged = ListChallenges.mergeKSortedLists(lists, null);
+        MyList<Integer> merged = ListChallenges.mergeKsSortedLists(lists, null);
 
         assertEquals(2, merged.size());
         assertEquals(1, merged.get(0));
@@ -1200,7 +1203,7 @@ class ListChallengesTest {
         lists.add(list2);
 
         Comparator<Integer> reverseOrder = Comparator.reverseOrder();
-        MyList<Integer> merged = ListChallenges.mergeKSortedLists(lists, reverseOrder);
+        MyList<Integer> merged = ListChallenges.mergeKsSortedLists(lists, reverseOrder);
 
         assertEquals(5, merged.size());
         assertEquals(5, merged.get(0));
@@ -1211,7 +1214,7 @@ class ListChallengesTest {
       @DisplayName("Throws exception for null input")
       void mergeKSortedLists_nullInput_throwsException() {
         assertThrows(
-            IllegalArgumentException.class, () -> ListChallenges.mergeKSortedLists(null, null));
+            IllegalArgumentException.class, () -> ListChallenges.mergeKsSortedLists(null, null));
       }
     }
 
@@ -1234,7 +1237,7 @@ class ListChallengesTest {
         lists.add(list1);
         lists.add(list2);
 
-        MyList<Integer> merged = ListChallenges.mergeKSortedLists(lists, null);
+        MyList<Integer> merged = ListChallenges.mergeKsSortedLists(lists, null);
 
         assertEquals(3, merged.size());
       }
@@ -1259,7 +1262,7 @@ class ListChallengesTest {
         list.add(4);
         list.add(5);
 
-        ListChallenges.reverseKGroup(list, 3);
+        ListChallenges.reverseKsGroup(list, 3);
 
         // First group [1,2,3] reversed to [3,2,1]
         // Second group [4,5] has < k elements, keep as is
@@ -1280,7 +1283,7 @@ class ListChallengesTest {
         list.add(4);
         list.add(5);
 
-        ListChallenges.reverseKGroup(list, 2);
+        ListChallenges.reverseKsGroup(list, 2);
 
         // [1,2] -> [2,1], [3,4] -> [4,3], [5] stays
         assertEquals(2, list.get(0));
@@ -1298,7 +1301,7 @@ class ListChallengesTest {
         list.add(2);
         list.add(3);
 
-        ListChallenges.reverseKGroup(list, 1);
+        ListChallenges.reverseKsGroup(list, 1);
 
         assertEquals(1, list.get(0));
         assertEquals(2, list.get(1));
@@ -1313,7 +1316,7 @@ class ListChallengesTest {
         list.add(2);
         list.add(3);
 
-        ListChallenges.reverseKGroup(list, 3);
+        ListChallenges.reverseKsGroup(list, 3);
 
         assertEquals(3, list.get(0));
         assertEquals(2, list.get(1));
@@ -1327,7 +1330,7 @@ class ListChallengesTest {
         list.add(1);
         list.add(2);
 
-        ListChallenges.reverseKGroup(list, 5);
+        ListChallenges.reverseKsGroup(list, 5);
 
         assertEquals(1, list.get(0));
         assertEquals(2, list.get(1));
@@ -1338,7 +1341,7 @@ class ListChallengesTest {
       void reverseKGroup_emptyList_unchanged() {
         MyList<Integer> list = new MyArrayList<>();
 
-        ListChallenges.reverseKGroup(list, 2);
+        ListChallenges.reverseKsGroup(list, 2);
 
         assertTrue(list.isEmpty());
       }
@@ -1349,14 +1352,14 @@ class ListChallengesTest {
         MyList<Integer> list = new MyArrayList<>();
         list.add(1);
 
-        assertThrows(IllegalArgumentException.class, () -> ListChallenges.reverseKGroup(list, 0));
-        assertThrows(IllegalArgumentException.class, () -> ListChallenges.reverseKGroup(list, -1));
+        assertThrows(IllegalArgumentException.class, () -> ListChallenges.reverseKsGroup(list, 0));
+        assertThrows(IllegalArgumentException.class, () -> ListChallenges.reverseKsGroup(list, -1));
       }
 
       @Test
       @DisplayName("Throws exception for null list")
       void reverseKGroup_nullList_throwsException() {
-        assertThrows(IllegalArgumentException.class, () -> ListChallenges.reverseKGroup(null, 2));
+        assertThrows(IllegalArgumentException.class, () -> ListChallenges.reverseKsGroup(null, 2));
       }
     }
 
@@ -1373,7 +1376,7 @@ class ListChallengesTest {
         list.add("C");
         list.add("D");
 
-        ListChallenges.reverseKGroup(list, 2);
+        ListChallenges.reverseKsGroup(list, 2);
 
         assertEquals("B", list.get(0));
         assertEquals("A", list.get(1));
@@ -1527,6 +1530,420 @@ class ListChallengesTest {
     }
   }
 
+  // ==================== ARRAY-FOCUSED CHALLENGE TESTS ====================
+
+  @Nested
+  @DisplayName("Longest Error-Free Streak Tests")
+  class LongestErrorFreeStreakTests {
+
+    private SystemEvent createEvent(SystemEvent.Severity severity) {
+      return SystemEvent.builder()
+          .timestamp(Instant.now())
+          .severity(severity)
+          .source("test-service")
+          .message("test message")
+          .build();
+    }
+
+    @Test
+    @DisplayName("Finds longest streak with mixed severities")
+    void longestErrorFreeStreak_mixedSeverities_findsLongest() {
+      MyList<SystemEvent> events = new MyArrayList<>();
+      events.add(createEvent(SystemEvent.Severity.INFO));
+      events.add(createEvent(SystemEvent.Severity.DEBUG));
+      events.add(createEvent(SystemEvent.Severity.ERROR));
+      events.add(createEvent(SystemEvent.Severity.INFO));
+      events.add(createEvent(SystemEvent.Severity.INFO));
+      events.add(createEvent(SystemEvent.Severity.WARNING));
+      events.add(createEvent(SystemEvent.Severity.INFO));
+      events.add(createEvent(SystemEvent.Severity.ERROR));
+
+      int result = ListChallenges.longestErrorFreeStreak(events);
+
+      assertEquals(4, result);
+    }
+
+    @Test
+    @DisplayName("Returns 0 when all events are errors")
+    void longestErrorFreeStreak_allErrors_returnsZero() {
+      MyList<SystemEvent> events = new MyArrayList<>();
+      events.add(createEvent(SystemEvent.Severity.ERROR));
+      events.add(createEvent(SystemEvent.Severity.ERROR));
+      events.add(createEvent(SystemEvent.Severity.ERROR));
+
+      int result = ListChallenges.longestErrorFreeStreak(events);
+
+      assertEquals(0, result);
+    }
+
+    @Test
+    @DisplayName("Returns full length when no errors")
+    void longestErrorFreeStreak_noErrors_returnsFullLength() {
+      MyList<SystemEvent> events = new MyArrayList<>();
+      events.add(createEvent(SystemEvent.Severity.INFO));
+      events.add(createEvent(SystemEvent.Severity.DEBUG));
+      events.add(createEvent(SystemEvent.Severity.WARNING));
+      events.add(createEvent(SystemEvent.Severity.CRITICAL));
+
+      int result = ListChallenges.longestErrorFreeStreak(events);
+
+      assertEquals(4, result);
+    }
+
+    @Test
+    @DisplayName("Returns 0 for empty list")
+    void longestErrorFreeStreak_emptyList_returnsZero() {
+      MyList<SystemEvent> events = new MyArrayList<>();
+
+      int result = ListChallenges.longestErrorFreeStreak(events);
+
+      assertEquals(0, result);
+    }
+
+    @Test
+    @DisplayName("Handles error at start")
+    void longestErrorFreeStreak_errorAtStart_handlesCorrectly() {
+      MyList<SystemEvent> events = new MyArrayList<>();
+      events.add(createEvent(SystemEvent.Severity.ERROR));
+      events.add(createEvent(SystemEvent.Severity.INFO));
+      events.add(createEvent(SystemEvent.Severity.INFO));
+
+      int result = ListChallenges.longestErrorFreeStreak(events);
+
+      assertEquals(2, result);
+    }
+
+    @Test
+    @DisplayName("Handles error at end")
+    void longestErrorFreeStreak_errorAtEnd_handlesCorrectly() {
+      MyList<SystemEvent> events = new MyArrayList<>();
+      events.add(createEvent(SystemEvent.Severity.INFO));
+      events.add(createEvent(SystemEvent.Severity.INFO));
+      events.add(createEvent(SystemEvent.Severity.INFO));
+      events.add(createEvent(SystemEvent.Severity.ERROR));
+
+      int result = ListChallenges.longestErrorFreeStreak(events);
+
+      assertEquals(3, result);
+    }
+
+    @Test
+    @DisplayName("Throws exception for null list")
+    void longestErrorFreeStreak_nullList_throwsException() {
+      assertThrows(
+          IllegalArgumentException.class, () -> ListChallenges.longestErrorFreeStreak(null));
+    }
+  }
+
+  @Nested
+  @DisplayName("Find Missing ID Tests")
+  class FindMissingIdTests {
+
+    @Test
+    @DisplayName("Finds missing ID in middle")
+    void findMissingId_missingInMiddle_findsCorrectly() {
+      MyList<Integer> packetIds = new MyArrayList<>();
+      packetIds.add(3);
+      packetIds.add(1);
+      packetIds.add(4);
+      packetIds.add(2);
+      packetIds.add(6);
+
+      int result = ListChallenges.findMissingId(packetIds);
+
+      assertEquals(5, result);
+    }
+
+    @Test
+    @DisplayName("Finds missing first ID (1)")
+    void findMissingId_missingFirst_findsCorrectly() {
+      MyList<Integer> packetIds = new MyArrayList<>();
+      packetIds.add(3);
+      packetIds.add(2);
+      packetIds.add(4);
+
+      int result = ListChallenges.findMissingId(packetIds);
+
+      assertEquals(1, result);
+    }
+
+    @Test
+    @DisplayName("Returns n+1 when all present")
+    void findMissingId_allPresent_returnsNPlusOne() {
+      MyList<Integer> packetIds = new MyArrayList<>();
+      packetIds.add(1);
+      packetIds.add(2);
+      packetIds.add(3);
+
+      int result = ListChallenges.findMissingId(packetIds);
+
+      assertEquals(4, result);
+    }
+
+    @Test
+    @DisplayName("Returns 1 for empty list")
+    void findMissingId_emptyList_returnsOne() {
+      MyList<Integer> packetIds = new MyArrayList<>();
+
+      int result = ListChallenges.findMissingId(packetIds);
+
+      assertEquals(1, result);
+    }
+
+    @Test
+    @DisplayName("Handles unsorted input")
+    void findMissingId_unsortedInput_findsCorrectly() {
+      MyList<Integer> packetIds = new MyArrayList<>();
+      packetIds.add(5);
+      packetIds.add(3);
+      packetIds.add(1);
+      packetIds.add(4);
+
+      int result = ListChallenges.findMissingId(packetIds);
+
+      assertEquals(2, result);
+    }
+
+    @Test
+    @DisplayName("Handles single element")
+    void findMissingId_singleElement_findsCorrectly() {
+      MyList<Integer> packetIds = new MyArrayList<>();
+      packetIds.add(2);
+
+      int result = ListChallenges.findMissingId(packetIds);
+
+      assertEquals(1, result);
+    }
+
+    @Test
+    @DisplayName("Throws exception for null list")
+    void findMissingId_nullList_throwsException() {
+      assertThrows(IllegalArgumentException.class, () -> ListChallenges.findMissingId(null));
+    }
+  }
+
+  @Nested
+  @DisplayName("Next Higher Element Tests")
+  class NextHigherElementTests {
+
+    @Test
+    @DisplayName("Standard case with temperatures")
+    void nextHigherElement_standardCase_returnsCorrectDistances() {
+      MyList<Integer> values = new MyArrayList<>();
+      values.add(73);
+      values.add(74);
+      values.add(75);
+      values.add(71);
+      values.add(69);
+      values.add(72);
+      values.add(76);
+      values.add(73);
+
+      MyList<Integer> result = ListChallenges.nextHigherElement(values);
+
+      assertEquals(8, result.size());
+      assertEquals(1, result.get(0)); // 73 -> 74 is 1 step
+      assertEquals(1, result.get(1)); // 74 -> 75 is 1 step
+      assertEquals(4, result.get(2)); // 75 -> 76 is 4 steps
+      assertEquals(2, result.get(3)); // 71 -> 72 is 2 steps
+      assertEquals(1, result.get(4)); // 69 -> 72 is 1 step
+      assertEquals(1, result.get(5)); // 72 -> 76 is 1 step
+      assertEquals(0, result.get(6)); // 76 has no higher
+      assertEquals(0, result.get(7)); // 73 has no higher
+    }
+
+    @Test
+    @DisplayName("Ascending sequence returns all 1s except last")
+    void nextHigherElement_ascending_returnsOnesExceptLast() {
+      MyList<Integer> values = new MyArrayList<>();
+      values.add(1);
+      values.add(2);
+      values.add(3);
+      values.add(4);
+
+      MyList<Integer> result = ListChallenges.nextHigherElement(values);
+
+      assertEquals(4, result.size());
+      assertEquals(1, result.get(0));
+      assertEquals(1, result.get(1));
+      assertEquals(1, result.get(2));
+      assertEquals(0, result.get(3));
+    }
+
+    @Test
+    @DisplayName("Descending sequence returns all zeros")
+    void nextHigherElement_descending_returnsAllZeros() {
+      MyList<Integer> values = new MyArrayList<>();
+      values.add(4);
+      values.add(3);
+      values.add(2);
+      values.add(1);
+
+      MyList<Integer> result = ListChallenges.nextHigherElement(values);
+
+      assertEquals(4, result.size());
+      assertEquals(0, result.get(0));
+      assertEquals(0, result.get(1));
+      assertEquals(0, result.get(2));
+      assertEquals(0, result.get(3));
+    }
+
+    @Test
+    @DisplayName("All equal returns all zeros")
+    void nextHigherElement_allEqual_returnsAllZeros() {
+      MyList<Integer> values = new MyArrayList<>();
+      values.add(5);
+      values.add(5);
+      values.add(5);
+      values.add(5);
+
+      MyList<Integer> result = ListChallenges.nextHigherElement(values);
+
+      assertEquals(4, result.size());
+      assertEquals(0, result.get(0));
+      assertEquals(0, result.get(1));
+      assertEquals(0, result.get(2));
+      assertEquals(0, result.get(3));
+    }
+
+    @Test
+    @DisplayName("Empty list returns empty result")
+    void nextHigherElement_emptyList_returnsEmpty() {
+      MyList<Integer> values = new MyArrayList<>();
+
+      MyList<Integer> result = ListChallenges.nextHigherElement(values);
+
+      assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Single element returns zero")
+    void nextHigherElement_singleElement_returnsZero() {
+      MyList<Integer> values = new MyArrayList<>();
+      values.add(42);
+
+      MyList<Integer> result = ListChallenges.nextHigherElement(values);
+
+      assertEquals(1, result.size());
+      assertEquals(0, result.get(0));
+    }
+
+    @Test
+    @DisplayName("Throws exception for null list")
+    void nextHigherElement_nullList_throwsException() {
+      assertThrows(IllegalArgumentException.class, () -> ListChallenges.nextHigherElement(null));
+    }
+  }
+
+  @Nested
+  @DisplayName("Merge Intervals Tests")
+  class MergeIntervalsTests {
+
+    @Test
+    @DisplayName("Merges overlapping intervals correctly")
+    void mergeIntervals_overlapping_mergesCorrectly() {
+      MyList<Interval> intervals = new MyArrayList<>();
+      intervals.add(Interval.of(1, 3));
+      intervals.add(Interval.of(2, 6));
+      intervals.add(Interval.of(8, 10));
+      intervals.add(Interval.of(15, 18));
+
+      MyList<Interval> result = ListChallenges.mergeIntervals(intervals);
+
+      assertEquals(3, result.size());
+      assertEquals(Interval.of(1, 6), result.get(0));
+      assertEquals(Interval.of(8, 10), result.get(1));
+      assertEquals(Interval.of(15, 18), result.get(2));
+    }
+
+    @Test
+    @DisplayName("No overlaps preserves all intervals")
+    void mergeIntervals_noOverlaps_preservesAll() {
+      MyList<Interval> intervals = new MyArrayList<>();
+      intervals.add(Interval.of(1, 2));
+      intervals.add(Interval.of(4, 5));
+      intervals.add(Interval.of(7, 8));
+
+      MyList<Interval> result = ListChallenges.mergeIntervals(intervals);
+
+      assertEquals(3, result.size());
+      assertEquals(Interval.of(1, 2), result.get(0));
+      assertEquals(Interval.of(4, 5), result.get(1));
+      assertEquals(Interval.of(7, 8), result.get(2));
+    }
+
+    @Test
+    @DisplayName("All overlapping merges to single interval")
+    void mergeIntervals_allOverlapping_mergestoSingle() {
+      MyList<Interval> intervals = new MyArrayList<>();
+      intervals.add(Interval.of(1, 5));
+      intervals.add(Interval.of(2, 6));
+      intervals.add(Interval.of(3, 8));
+      intervals.add(Interval.of(7, 10));
+
+      MyList<Interval> result = ListChallenges.mergeIntervals(intervals);
+
+      assertEquals(1, result.size());
+      assertEquals(Interval.of(1, 10), result.get(0));
+    }
+
+    @Test
+    @DisplayName("Adjacent intervals merge")
+    void mergeIntervals_adjacent_merges() {
+      MyList<Interval> intervals = new MyArrayList<>();
+      intervals.add(Interval.of(1, 5));
+      intervals.add(Interval.of(5, 10));
+
+      MyList<Interval> result = ListChallenges.mergeIntervals(intervals);
+
+      assertEquals(1, result.size());
+      assertEquals(Interval.of(1, 10), result.get(0));
+    }
+
+    @Test
+    @DisplayName("Handles unsorted input")
+    void mergeIntervals_unsorted_handlesCorrectly() {
+      MyList<Interval> intervals = new MyArrayList<>();
+      intervals.add(Interval.of(8, 10));
+      intervals.add(Interval.of(1, 3));
+      intervals.add(Interval.of(2, 6));
+
+      MyList<Interval> result = ListChallenges.mergeIntervals(intervals);
+
+      assertEquals(2, result.size());
+      assertEquals(Interval.of(1, 6), result.get(0));
+      assertEquals(Interval.of(8, 10), result.get(1));
+    }
+
+    @Test
+    @DisplayName("Empty list returns empty result")
+    void mergeIntervals_emptyList_returnsEmpty() {
+      MyList<Interval> intervals = new MyArrayList<>();
+
+      MyList<Interval> result = ListChallenges.mergeIntervals(intervals);
+
+      assertTrue(result.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Single interval returns single interval")
+    void mergeIntervals_singleInterval_returnsSame() {
+      MyList<Interval> intervals = new MyArrayList<>();
+      intervals.add(Interval.of(5, 10));
+
+      MyList<Interval> result = ListChallenges.mergeIntervals(intervals);
+
+      assertEquals(1, result.size());
+      assertEquals(Interval.of(5, 10), result.get(0));
+    }
+
+    @Test
+    @DisplayName("Throws exception for null list")
+    void mergeIntervals_nullList_throwsException() {
+      assertThrows(IllegalArgumentException.class, () -> ListChallenges.mergeIntervals(null));
+    }
+  }
+
   // ==================== MASTERY CHECK TESTS ====================
 
   @Nested
@@ -1559,7 +1976,7 @@ class ListChallengesTest {
 
     @Test
     @DisplayName("Merge K sorted lists performance")
-    void masteryCheck_mergeKSortedLists() {
+    void masteryCheck_mergeKsSortedLists() {
       MyList<MyList<Integer>> lists = new MyArrayList<>();
       int numLists = 100;
       int elementsPerList = 100;
@@ -1574,7 +1991,7 @@ class ListChallengesTest {
       }
 
       long startTime = System.nanoTime();
-      MyList<Integer> merged = ListChallenges.mergeKSortedLists(lists, null);
+      MyList<Integer> merged = ListChallenges.mergeKsSortedLists(lists, null);
       long endTime = System.nanoTime();
 
       // Verify size

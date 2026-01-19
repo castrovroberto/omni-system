@@ -98,7 +98,7 @@ public class MyArrayList<T> implements MyList<T> {
     if (index < 0 || index >= size) {
       throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
     }
-    T removed = elements[index];
+    final T removed = elements[index];
 
     // Shift elements left to fill the gap
     //

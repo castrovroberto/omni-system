@@ -39,6 +39,7 @@ public class MyLinkedList<T> implements MyList<T> {
   private int size;
   private int modCount; // For fail-fast iterators
 
+  /** Constructs an empty linked list with sentinel nodes. */
   public MyLinkedList() {
     // Initialize Sentinel Nodes
     //

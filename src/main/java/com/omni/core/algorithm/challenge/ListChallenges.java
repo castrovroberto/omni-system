@@ -1,5 +1,7 @@
 package com.omni.core.algorithm.challenge;
 
+import com.omni.app.log.Interval;
+import com.omni.app.log.SystemEvent;
 import com.omni.core.list.MyArrayList;
 import com.omni.core.list.MyList;
 import java.util.Comparator;
@@ -649,6 +651,128 @@ public final class ListChallenges {
     }
   }
 
+  /**
+   * Finds the longest consecutive streak of events without ERROR severity.
+   *
+   * <p><b>Difficulty:</b> {@link Difficulty#MEDIUM}
+   *
+   * <p><b>Technique:</b> Sliding Window (Single Pass)
+   *
+   * <pre>
+   *   Events: [INFO] [DEBUG] [ERROR] [INFO] [INFO] [WARNING] [INFO] [ERROR]
+   *              1      2       X       1      2       3        4       X
+   *           ──────────      ─────────────────────────────────
+   *           streak=2        streak=4 (max!)
+   *
+   *   Track currentLength and maxLength:
+   *   - Non-ERROR: increment currentLength
+   *   - ERROR: reset currentLength to 0
+   *   - Update maxLength after each non-ERROR event
+   *
+   *   Result: 4 (longest streak without ERROR)
+   * </pre>
+   *
+   * <p><b>Time:</b> O(n) | <b>Space:</b> O(1)
+   *
+   * @param events the list of system events to analyze
+   * @return the length of the longest consecutive error-free streak
+   * @throws IllegalArgumentException if events is null
+   */
+  public static int longestErrorFreeStreak(MyList<SystemEvent> events) {
+    if (events == null) {
+      throw new IllegalArgumentException("Events cannot be null");
+    }
+    if (events.isEmpty()) {
+      return 0;
+    }
+
+    int maxLength = 0;
+    int currentLength = 0;
+
+    for (int i = 0; i < events.size(); i++) {
+      SystemEvent event = events.get(i);
+      if (event != null && event.getSeverity() == SystemEvent.Severity.ERROR) {
+        currentLength = 0;
+      } else {
+        currentLength++;
+        maxLength = Math.max(maxLength, currentLength);
+      }
+    }
+
+    return maxLength;
+  }
+
+  /**
+   * Finds the missing packet ID from a sequence of IDs expected to be [1, 2, ..., n].
+   *
+   * <p><b>Difficulty:</b> {@link Difficulty#MEDIUM}
+   *
+   * <p><b>Technique:</b> Cyclic Sort
+   *
+   * <pre>
+   *   Input: [3, 1, 4, 2, 6]  (n=5, missing one from [1..6])
+   *
+   *   Cyclic Sort: Place each number n at index n-1
+   *
+   *   Step 1: i=0, value=3 → swap to index 2
+   *           [4, 1, 3, 2, 6]
+   *           value=4 → swap to index 3
+   *           [2, 1, 3, 4, 6]
+   *           value=2 → swap to index 1
+   *           [1, 2, 3, 4, 6]
+   *           value=1 → correct position!
+   *
+   *   After sort: [1, 2, 3, 4, 6]
+   *                           ^ index 4 has value 6, not 5!
+   *
+   *   Scan: Find first index i where value != i+1
+   *   Result: 5 (missing ID)
+   * </pre>
+   *
+   * <p><b>Time:</b> O(n) | <b>Space:</b> O(1)
+   *
+   * @param packetIds list of packet IDs (values should be in range [1, n+1] with one missing)
+   * @return the missing packet ID
+   * @throws IllegalArgumentException if packetIds is null
+   */
+  public static int findMissingId(MyList<Integer> packetIds) {
+    if (packetIds == null) {
+      throw new IllegalArgumentException("Packet IDs cannot be null");
+    }
+    if (packetIds.isEmpty()) {
+      return 1;
+    }
+
+    int n = packetIds.size();
+
+    // Cyclic sort: place number x at index x-1 (if x is in valid range)
+    int i = 0;
+    while (i < n) {
+      int value = packetIds.get(i);
+      // value should be at index value-1
+      // Only swap if value is in valid range [1, n] and not already in correct position
+      if (value >= 1 && value <= n && value != packetIds.get(value - 1)) {
+        // Swap elements at i and value-1
+        int targetIndex = value - 1;
+        int temp = packetIds.get(targetIndex);
+        packetIds.set(targetIndex, value);
+        packetIds.set(i, temp);
+      } else {
+        i++;
+      }
+    }
+
+    // Find the first position where the value doesn't match the expected value
+    for (int j = 0; j < n; j++) {
+      if (packetIds.get(j) != j + 1) {
+        return j + 1;
+      }
+    }
+
+    // All positions [1..n] are filled correctly, so n+1 is missing
+    return n + 1;
+  }
+
   // ==================== HARD CHALLENGES ====================
 
   /**
@@ -682,7 +806,8 @@ public final class ListChallenges {
    * @return single merged sorted list
    * @throws IllegalArgumentException if lists is null
    */
-  public static <T> MyList<T> mergeKSortedLists(MyList<MyList<T>> lists, Comparator<T> comparator) {
+  public static <T> MyList<T> mergeKsSortedLists(
+      MyList<MyList<T>> lists, Comparator<T> comparator) {
     if (lists == null) {
       throw new IllegalArgumentException("Lists cannot be null");
     }
@@ -764,7 +889,7 @@ public final class ListChallenges {
    * @param <T> the type of elements in the list
    * @throws IllegalArgumentException if list is null or k is less than 1
    */
-  public static <T> void reverseKGroup(MyList<T> list, int k) {
+  public static <T> void reverseKsGroup(MyList<T> list, int k) {
     if (list == null) {
       throw new IllegalArgumentException("List cannot be null");
     }
@@ -865,5 +990,167 @@ public final class ListChallenges {
 
     // Merge sorted halves
     return mergeSortedLists(sortedLeft, sortedRight, comparator);
+  }
+
+  /**
+   * Finds the number of positions to the next higher element for each position.
+   *
+   * <p><b>Difficulty:</b> {@link Difficulty#HARD}
+   *
+   * <p><b>Technique:</b> Monotonic Stack
+   *
+   * <pre>
+   *   Input:  [73, 74, 75, 71, 69, 72, 76, 73]
+   *   Output: [ 1,  1,  4,  2,  1,  1,  0,  0]
+   *
+   *   Stack-based approach (stores indices):
+   *
+   *   i=0: value=73, stack=[], push 0
+   *        stack=[0]
+   *
+   *   i=1: value=74 > values[stack.top()]=73
+   *        pop 0, result[0] = 1-0 = 1
+   *        push 1, stack=[1]
+   *
+   *   i=2: value=75 > values[1]=74
+   *        pop 1, result[1] = 2-1 = 1
+   *        push 2, stack=[2]
+   *
+   *   i=3: value=71 < 75, push 3
+   *        stack=[2,3]
+   *
+   *   i=4: value=69 < 71, push 4
+   *        stack=[2,3,4]
+   *
+   *   i=5: value=72 > 69, pop 4, result[4]=1
+   *        value=72 > 71, pop 3, result[3]=2
+   *        push 5, stack=[2,5]
+   *
+   *   i=6: value=76 > 72, pop 5, result[5]=1
+   *        value=76 > 75, pop 2, result[2]=4
+   *        push 6, stack=[6]
+   *
+   *   i=7: value=73 < 76, push 7
+   *        stack=[6,7]
+   *
+   *   Remaining indices in stack get 0 (no higher element to the right)
+   * </pre>
+   *
+   * <p><b>Time:</b> O(n) | <b>Space:</b> O(n)
+   *
+   * @param values list of integer values
+   * @return list where each position contains the distance to the next higher element (0 if none)
+   * @throws IllegalArgumentException if values is null
+   */
+  public static MyList<Integer> nextHigherElement(MyList<Integer> values) {
+    if (values == null) {
+      throw new IllegalArgumentException("Values cannot be null");
+    }
+
+    int n = values.size();
+    MyList<Integer> result = new MyArrayList<>();
+
+    // Initialize result with zeros
+    for (int i = 0; i < n; i++) {
+      result.add(0);
+    }
+
+    if (n == 0) {
+      return result;
+    }
+
+    // Stack stores indices (using MyArrayList as stack)
+    MyArrayList<Integer> stack = new MyArrayList<>();
+
+    for (int i = 0; i < n; i++) {
+      int currentValue = values.get(i);
+
+      // While stack is not empty and current value is greater than value at stack top
+      while (!stack.isEmpty() && currentValue > values.get(stack.get(stack.size() - 1))) {
+        int j = stack.remove(stack.size() - 1); // pop
+        result.set(j, i - j); // distance to next higher element
+      }
+
+      stack.add(i); // push current index
+    }
+
+    // Remaining indices in stack have no higher element to the right (already 0)
+    return result;
+  }
+
+  /**
+   * Merges overlapping intervals into non-overlapping intervals.
+   *
+   * <p><b>Difficulty:</b> {@link Difficulty#MEDIUM}
+   *
+   * <p><b>Technique:</b> Sort + Linear Scan
+   *
+   * <pre>
+   *   Input:  [[1,3], [2,6], [8,10], [15,18]]
+   *
+   *   Step 1: Sort by start time (already sorted in this example)
+   *
+   *   Step 2: Linear scan and merge overlapping
+   *
+   *   merged=[[1,3]]
+   *   [2,6] overlaps [1,3] → merge to [1,6]
+   *   merged=[[1,6]]
+   *
+   *   [8,10] doesn't overlap [1,6] → add
+   *   merged=[[1,6], [8,10]]
+   *
+   *   [15,18] doesn't overlap [8,10] → add
+   *   merged=[[1,6], [8,10], [15,18]]
+   *
+   *   Result: [[1,6], [8,10], [15,18]]
+   * </pre>
+   *
+   * <p><b>Time:</b> O(n log n) | <b>Space:</b> O(n)
+   *
+   * @param intervals list of intervals to merge
+   * @return new list with merged non-overlapping intervals
+   * @throws IllegalArgumentException if intervals is null
+   */
+  public static MyList<Interval> mergeIntervals(MyList<Interval> intervals) {
+    if (intervals == null) {
+      throw new IllegalArgumentException("Intervals cannot be null");
+    }
+
+    MyList<Interval> result = new MyArrayList<>();
+
+    if (intervals.isEmpty()) {
+      return result;
+    }
+
+    if (intervals.size() == 1) {
+      result.add(intervals.get(0));
+      return result;
+    }
+
+    // Sort intervals by start time using existing sortList
+    MyList<Interval> sorted = new MyArrayList<>();
+    for (int i = 0; i < intervals.size(); i++) {
+      sorted.add(intervals.get(i));
+    }
+    sortList(sorted, Comparator.comparingLong(Interval::getStart));
+
+    // Initialize result with first interval
+    result.add(sorted.get(0));
+
+    // Process remaining intervals
+    for (int i = 1; i < sorted.size(); i++) {
+      Interval current = sorted.get(i);
+      Interval lastMerged = result.get(result.size() - 1);
+
+      if (lastMerged.overlaps(current)) {
+        // Merge: replace last with merged interval
+        result.set(result.size() - 1, lastMerged.merge(current));
+      } else {
+        // No overlap: add to result
+        result.add(current);
+      }
+    }
+
+    return result;
   }
 }
