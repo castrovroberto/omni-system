@@ -1,0 +1,51 @@
+@startuml SearchAlgorithms
+
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+title Search Algorithms - Class Diagram
+
+interface "MyList<T>" as MyList {
+    +get(index: int): T
+    +size(): int
+}
+
+interface "Comparator<T>" as Comparator {
+    +compare(o1: T, o2: T): int
+}
+
+interface "Comparable<T>" as Comparable {
+    +compareTo(other: T): int
+}
+
+class SearchAlgorithms <<utility>> {
+    __
+    {static} +linearSearch<T>(list: MyList<T>, target: T, comparator: Comparator<T>): int
+    {static} +binarySearch<T>(list: MyList<T>, target: T, comparator: Comparator<T>): int
+    ..
+    {static} -compare<T>(a: T, b: T, comparator: Comparator<T>): int
+}
+
+SearchAlgorithms ..> MyList : operates on
+SearchAlgorithms ..> Comparator : uses (optional)
+SearchAlgorithms ..> Comparable : uses (fallback)
+
+note right of SearchAlgorithms
+  **Linear Search**
+  • Works on any list (sorted or not)
+  • O(n) time complexity
+  • Returns first match index or -1
+
+  **Binary Search**
+  • Requires sorted list
+  • O(log n) time complexity
+  • Returns index or -(insertion_point + 1)
+end note
+
+note bottom of SearchAlgorithms
+  If comparator is null, elements must
+  implement Comparable<T> (natural ordering)
+end note
+
+@enduml

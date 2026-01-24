@@ -1,0 +1,154 @@
+@startuml LogSystem
+
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+title Phase 1 Demo: Log Management System
+
+package "com.omni.core.list" {
+    interface "MyList<T>" as MyList
+    class "MyArrayList<T>" as MyArrayList
+    class "MyLinkedList<T>" as MyLinkedList
+
+    MyList <|.. MyArrayList
+    MyList <|.. MyLinkedList
+}
+
+package "com.omni.core.algorithm.search" {
+    class SearchAlgorithms <<utility>> {
+        {static} +linearSearch(list, target, comparator): int
+        {static} +binarySearch(list, target, comparator): int
+    }
+}
+
+package "com.omni.app.log" {
+
+    enum Severity {
+        DEBUG
+        INFO
+        WARNING
+        ERROR
+        CRITICAL
+    }
+
+    class SystemEvent <<immutable>> {
+        -timestamp: Instant
+        -severity: Severity
+        -source: String
+        -message: String
+        -metadata: Map<String, String>
+        __
+        +getTimestamp(): Instant
+        +getSeverity(): Severity
+        +getSource(): String
+        +getMessage(): String
+        +getMetadata(): Map<String, String>
+        +toString(): String
+        __
+        {static} +builder(): Builder
+    }
+
+    class "SystemEvent.Builder" as Builder {
+        -timestamp: Instant
+        -severity: Severity
+        -source: String
+        -message: String
+        -metadata: Map<String, String>
+        __
+        +timestamp(Instant): Builder
+        +severity(Severity): Builder
+        +source(String): Builder
+        +message(String): Builder
+        +metadata(String, String): Builder
+        +build(): SystemEvent
+    }
+
+    class EventLog <<uses MyArrayList>> {
+        -events: MyList<SystemEvent>
+        __
+        +record(event: SystemEvent): void
+        +get(index: int): SystemEvent
+        +size(): int
+        +isEmpty(): boolean
+        +clear(): void
+        +iterator(): Iterator<SystemEvent>
+    }
+
+    class AlertQueue <<uses MyLinkedList>> {
+        -alerts: MyLinkedList<SystemEvent>
+        __
+        +enqueue(alert: SystemEvent): void
+        +enqueuePriority(alert: SystemEvent): void
+        +dequeue(): SystemEvent
+        +peek(): SystemEvent
+        +hasAlerts(): boolean
+        +size(): int
+    }
+
+    class LogManager <<Singleton>> {
+        -{static} instance: LogManager
+        -eventLog: EventLog
+        -alertQueue: AlertQueue
+        __
+        -LogManager()
+        {static} +getInstance(): LogManager
+        +log(event: SystemEvent): void
+        +getEventLog(): EventLog
+        +getAlertQueue(): AlertQueue
+        +getEventCount(): int
+        +getAlertCount(): int
+    }
+
+    class LogSearcher <<utility>> {
+        {static} +searchByTimestamp(log, timestamp): int
+        {static} +binarySearchByTimestamp(log, timestamp): int
+        {static} +searchBySeverity(log, severity): SystemEvent
+        {static} +searchBySource(log, source): SystemEvent
+    }
+
+    SystemEvent +-- Builder : creates
+    SystemEvent --> Severity
+
+    EventLog o-- SystemEvent : stores
+    AlertQueue o-- SystemEvent : stores
+
+    LogManager --> EventLog : manages
+    LogManager --> AlertQueue : manages
+
+    LogSearcher ..> EventLog : searches
+    LogSearcher ..> SearchAlgorithms : uses
+}
+
+EventLog ..> MyArrayList : uses
+AlertQueue ..> MyLinkedList : uses
+
+note right of LogManager
+  **Singleton Pattern**
+  • Private constructor
+  • Thread-safe lazy init
+  • Global access point
+end note
+
+note right of Builder
+  **Builder Pattern**
+  • Fluent API
+  • Enforces required fields
+  • Creates immutable object
+end note
+
+note bottom of EventLog
+  Uses MyArrayList for:
+  • O(1) append
+  • O(1) random access
+  • Memory efficiency
+end note
+
+note bottom of AlertQueue
+  Uses MyLinkedList for:
+  • O(1) enqueue/dequeue
+  • FIFO processing
+  • Priority insertion
+end note
+
+@enduml

@@ -1,0 +1,122 @@
+@startuml MyLinkedList
+
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+title MyLinkedList - Class Diagram
+
+interface "Iterable<T>" as Iterable {
+    +iterator(): Iterator<T>
+}
+
+interface "MyList<T>" as MyList {
+    +add(element: T): void
+    +add(index: int, element: T): void
+    +get(index: int): T
+    +set(index: int, element: T): T
+    +remove(index: int): T
+    +size(): int
+    +isEmpty(): boolean
+    +clear(): void
+    +contains(element: T): boolean
+    +indexOf(element: T): int
+    +toArray(): Object[]
+}
+
+class "MyLinkedList<T>" as MyLinkedList {
+    -head: Node<T>
+    -tail: Node<T>
+    -size: int
+    -modCount: int
+    __
+    +MyLinkedList()
+    ..
+    +add(element: T): void
+    +add(index: int, element: T): void
+    +addFirst(element: T): void
+    +addLast(element: T): void
+    +get(index: int): T
+    +getFirst(): T
+    +getLast(): T
+    +set(index: int, element: T): T
+    +remove(index: int): T
+    +removeFirst(): T
+    +removeLast(): T
+    +size(): int
+    +isEmpty(): boolean
+    +clear(): void
+    +contains(element: T): boolean
+    +indexOf(element: T): int
+    +toArray(): Object[]
+    +iterator(): Iterator<T>
+    ..
+    -getNode(index: int): Node<T>
+    -getNodeForInsertion(index: int): Node<T>
+    -unlink(node: Node<T>): T
+}
+
+class "Node<T>" as Node <<static>> {
+    -value: T
+    -prev: Node<T>
+    -next: Node<T>
+    __
+    +Node(value: T, prev: Node<T>, next: Node<T>)
+}
+
+class "MyLinkedListIterator" as Iterator {
+    -current: Node<T>
+    -lastReturned: Node<T>
+    -expectedModCount: int
+    __
+    +hasNext(): boolean
+    +next(): T
+    +remove(): void
+}
+
+interface "Iterator<T>" as JavaIterator {
+    +hasNext(): boolean
+    +next(): T
+    +remove(): void
+}
+
+Iterable <|.. MyList
+MyList <|.. MyLinkedList
+MyLinkedList +-- Node : inner static class
+MyLinkedList +-- Iterator : inner class
+JavaIterator <|.. Iterator
+
+Node "prev" --> Node
+Node "next" --> Node
+
+note right of MyLinkedList::head
+  Sentinel node (dummy)
+  head.next = first real element
+  Eliminates null checks
+end note
+
+note right of MyLinkedList::tail
+  Sentinel node (dummy)
+  tail.prev = last real element
+  Enables O(1) addLast
+end note
+
+note bottom of MyLinkedList
+  **Key Operations:**
+  • addFirst/addLast: O(1) - pointer updates only
+  • removeFirst/removeLast: O(1) - pointer updates only
+  • get(i): O(n/4) avg - traverses from nearest end
+  • add(i,e): O(n) find + O(1) insert
+
+  **Memory:**
+  ~120 bytes overhead + ~40 bytes per node
+end note
+
+note right of Node
+  Doubly-linked structure
+  enables bidirectional
+  traversal and O(1)
+  removal at both ends
+end note
+
+@enduml

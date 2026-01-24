@@ -1,0 +1,153 @@
+@startuml AuthService
+
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+title Auth Service - Class Diagram
+
+enum "Permission" as Permission {
+    READ
+    WRITE
+    DELETE
+    MANAGE_USERS
+    ADMIN
+}
+
+enum "UserType" as UserType {
+    ADMIN
+    DEVELOPER
+    VIEWER
+}
+
+abstract class "User" as User {
+    -username: String
+    -createdAt: Instant
+    -lastLoginAt: Instant
+    __
+    #User(username: String)
+    +{static} create(type: UserType, username: String): User
+    +getUsername(): String
+    +getType(): UserType
+    +getCreatedAt(): Instant
+    +getLastLoginAt(): Instant
+    +recordLogin(): void
+    +{abstract} hasPermission(permission: Permission): boolean
+    +{abstract} getPermissions(): Set<Permission>
+}
+
+class "AdminUser" as AdminUser {
+    +hasPermission(permission: Permission): boolean
+    +getPermissions(): Set<Permission>
+    +getType(): UserType
+}
+
+class "DeveloperUser" as DeveloperUser {
+    +hasPermission(permission: Permission): boolean
+    +getPermissions(): Set<Permission>
+    +getType(): UserType
+}
+
+class "ViewerUser" as ViewerUser {
+    +hasPermission(permission: Permission): boolean
+    +getPermissions(): Set<Permission>
+    +getType(): UserType
+}
+
+class "UserSession" as UserSession {
+    -token: String
+    -user: User
+    -createdAt: Instant
+    -lastAccessedAt: Instant
+    -expiresAt: Instant
+    __
+    +UserSession(user: User)
+    +UserSession(user: User, duration: Duration)
+    +getToken(): String
+    +getUser(): User
+    +getCreatedAt(): Instant
+    +getLastAccessedAt(): Instant
+    +getExpiresAt(): Instant
+    +isExpired(): boolean
+    +touch(): void
+}
+
+class "SessionStore" as SessionStore {
+    -sessions: MyMap<String, UserSession>
+    -defaultSessionDuration: Duration
+    __
+    +SessionStore()
+    +SessionStore(sessionDuration: Duration)
+    +createSession(user: User): UserSession
+    +getSession(token: String): Optional<UserSession>
+    +validateSession(token: String): Optional<UserSession>
+    +invalidateSession(token: String): boolean
+    +invalidateUserSessions(username: String): int
+    +cleanupExpiredSessions(): int
+    +getActiveSessionCount(): int
+}
+
+class "UserRegistry" as UserRegistry {
+    -users: MyMap<String, User>
+    __
+    +registerUser(type: UserType, username: String): User
+    +getUser(username: String): Optional<User>
+    +removeUser(username: String): boolean
+    +userExists(username: String): boolean
+    +getUserCount(): int
+    +getUsersByType(type: UserType): MyList<User>
+    +getUsersSortedByUsername(): MyList<User>
+    +getUsersSortedByLastLogin(): MyList<User>
+    +getAllUsers(): Iterable<User>
+}
+
+User <|-- AdminUser
+User <|-- DeveloperUser
+User <|-- ViewerUser
+
+User ..> Permission : uses
+User ..> UserType : uses
+
+UserSession o-- User : contains
+SessionStore o-- UserSession : manages
+UserRegistry o-- User : manages
+
+note right of User::create
+  **Factory Method Pattern**
+  Creates appropriate User subtype
+  based on UserType enum.
+  Caller doesn't know about
+  AdminUser, DeveloperUser, etc.
+end note
+
+note bottom of AdminUser
+  Permissions:
+  READ, WRITE, DELETE,
+  MANAGE_USERS, ADMIN
+end note
+
+note bottom of DeveloperUser
+  Permissions:
+  READ, WRITE
+end note
+
+note bottom of ViewerUser
+  Permissions:
+  READ
+end note
+
+note right of SessionStore
+  Uses MyHashMap for O(1)
+  session lookup by token.
+  Supports session expiration
+  and cleanup.
+end note
+
+note right of UserRegistry
+  Uses MyHashMap for O(1)
+  user lookup by username.
+  Uses SortAlgorithms for
+  sorted user views.
+end note
+
+@enduml

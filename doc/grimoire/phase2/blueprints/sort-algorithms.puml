@@ -1,0 +1,74 @@
+@startuml SortAlgorithms
+
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+title SortAlgorithms - Class Diagram
+
+class "SortAlgorithms" as SortAlgorithms <<final>> {
+    -SortAlgorithms()
+    __
+    +{static} mergeSort<T>(list: MyList<T>): void
+    +{static} mergeSort<T>(list: MyList<T>, comparator: Comparator<T>): void
+    +{static} quickSort<T>(list: MyList<T>): void
+    +{static} quickSort<T>(list: MyList<T>, comparator: Comparator<T>): void
+    +{static} isSorted<T>(list: MyList<T>, comparator: Comparator<T>): boolean
+    ..
+    -{static} mergeSortRecursive<T>(list: MyList<T>, comparator: Comparator<T>): MyList<T>
+    -{static} merge<T>(left: MyList<T>, right: MyList<T>, comparator: Comparator<T>): MyList<T>
+    -{static} quickSortRecursive<T>(list: MyList<T>, low: int, high: int, comparator: Comparator<T>): void
+    -{static} partition<T>(list: MyList<T>, low: int, high: int, comparator: Comparator<T>): int
+    -{static} medianOfThree<T>(list: MyList<T>, low: int, mid: int, high: int, comparator: Comparator<T>): void
+    -{static} insertionSort<T>(list: MyList<T>, low: int, high: int, comparator: Comparator<T>): void
+    -{static} swap<T>(list: MyList<T>, i: int, j: int): void
+    -{static} compare<T>(a: T, b: T, comparator: Comparator<T>): int
+}
+
+interface "MyList<T>" as MyList {
+    +get(index: int): T
+    +set(index: int, element: T): T
+    +size(): int
+}
+
+interface "Comparator<T>" as Comparator <<java.util>> {
+    +compare(o1: T, o2: T): int
+}
+
+SortAlgorithms ..> MyList : operates on
+SortAlgorithms ..> Comparator : uses
+
+note right of SortAlgorithms::mergeSortRecursive
+  Divide-and-Conquer:
+  1. Split list in half
+  2. Recursively sort halves
+  3. Merge sorted halves
+end note
+
+note right of SortAlgorithms::medianOfThree
+  Pivot Selection:
+  Chooses median of first,
+  middle, and last elements.
+  Prevents O(n²) on sorted input.
+end note
+
+note right of SortAlgorithms::insertionSort
+  Small Array Optimization:
+  Used for subarrays < 10 elements.
+  Lower overhead than recursion.
+end note
+
+note bottom of SortAlgorithms
+  **MergeSort**
+  • Time: O(n log n) always
+  • Space: O(n) auxiliary
+  • Stable: Yes
+
+  **QuickSort**
+  • Time: O(n log n) average, O(n²) worst
+  • Space: O(log n) stack
+  • Stable: No
+  • Optimizations: median-of-three, insertion sort cutoff
+end note
+
+@enduml

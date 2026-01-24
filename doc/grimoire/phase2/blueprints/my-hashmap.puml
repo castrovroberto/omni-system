@@ -1,0 +1,131 @@
+@startuml MyHashMap
+
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+title MyHashMap - Class Diagram
+
+interface "MyMap<K,V>" as MyMap {
+    +put(key: K, value: V): Optional<V>
+    +get(key: K): Optional<V>
+    +remove(key: K): Optional<V>
+    +containsKey(key: K): boolean
+    +containsValue(value: V): boolean
+    +size(): int
+    +isEmpty(): boolean
+    +clear(): void
+    +keys(): Iterable<K>
+    +values(): Iterable<V>
+    +entries(): Iterable<Entry<K,V>>
+}
+
+interface "MyMap.Entry<K,V>" as Entry {
+    +getKey(): K
+    +getValue(): V
+}
+
+interface "HashStrategy<K>" as HashStrategy {
+    +hash(key: K, capacity: int): int
+}
+
+class "DefaultHashStrategy<K>" as DefaultHash {
+    +hash(key: K, capacity: int): int
+}
+
+class "DJB2HashStrategy" as DJB2Hash {
+    -INITIAL_HASH: long = 5381
+    +hash(key: String, capacity: int): int
+}
+
+class "MyHashMap<K,V>" as MyHashMap {
+    -DEFAULT_INITIAL_CAPACITY: int = 16
+    -DEFAULT_LOAD_FACTOR: float = 0.75
+    -MAXIMUM_CAPACITY: int
+    __
+    -buckets: MyList<MapEntry<K,V>>[]
+    -size: int
+    -loadFactor: float
+    -threshold: int
+    -hashStrategy: HashStrategy<K>
+    __
+    +MyHashMap()
+    +MyHashMap(initialCapacity: int)
+    +MyHashMap(initialCapacity: int, loadFactor: float)
+    +setHashStrategy(strategy: HashStrategy<K>): void
+    +getHashStrategy(): HashStrategy<K>
+    ..
+    +put(key: K, value: V): Optional<V>
+    +get(key: K): Optional<V>
+    +remove(key: K): Optional<V>
+    +containsKey(key: K): boolean
+    +containsValue(value: V): boolean
+    +size(): int
+    +isEmpty(): boolean
+    +clear(): void
+    +keys(): Iterable<K>
+    +values(): Iterable<V>
+    +entries(): Iterable<Entry<K,V>>
+    ..
+    +capacity(): int
+    +currentLoadFactor(): float
+    +getLoadFactor(): float
+    +getChainLengthDistribution(): int[]
+    +getAverageChainLength(): double
+    ..
+    -getBucketIndex(key: K): int
+    -keysEqual(k1: K, k2: K): boolean
+    -valuesEqual(v1: V, v2: V): boolean
+    -resize(): void
+    -{static} tableSizeFor(cap: int): int
+}
+
+class "MapEntry<K,V>" as MapEntry <<static>> {
+    -key: K
+    -value: V
+    +getKey(): K
+    +getValue(): V
+}
+
+class "HashIterator<T>" as HashIterator <<abstract>> {
+    -bucketIndex: int
+    -bucketIterator: Iterator<MapEntry<K,V>>
+    -next: MapEntry<K,V>
+    +hasNext(): boolean
+    #nextEntry(): MapEntry<K,V>
+    -advanceToNext(): void
+}
+
+MyMap <|.. MyHashMap
+Entry <|.. MapEntry
+HashStrategy <|.. DefaultHash
+HashStrategy <|.. DJB2Hash
+
+MyHashMap +-- MapEntry : inner class
+MyHashMap +-- HashIterator : inner class
+MyHashMap o-- HashStrategy : uses
+
+note right of MyHashMap::buckets
+  Array of linked lists.
+  Each bucket holds entries
+  that hash to same index.
+end note
+
+note right of MyHashMap::hashStrategy
+  Strategy pattern:
+  Swappable hash functions
+end note
+
+note bottom of MyHashMap
+  **Collision Handling:** Separate Chaining
+  Uses MyLinkedList for each bucket.
+
+  **Key Operations:**
+  • put/get/remove: O(1) average
+  • Resize: O(n) when load > threshold
+
+  **Memory:**
+  Buckets array + ~32 bytes per entry
+end note
+
+@enduml

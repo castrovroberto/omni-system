@@ -1,0 +1,130 @@
+@startuml DesignPatterns
+
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+title Phase 2 Design Patterns
+
+' ===== STRATEGY PATTERN =====
+package "Strategy Pattern (HashStrategy)" {
+    interface "HashStrategy<K>" as HashStrategy {
+        +hash(key: K, capacity: int): int
+    }
+
+    class "DefaultHashStrategy<K>" as DefaultHash {
+        +hash(key: K, capacity: int): int
+    }
+
+    class "DJB2HashStrategy" as DJB2Hash {
+        -INITIAL_HASH: long = 5381
+        +hash(key: String, capacity: int): int
+    }
+
+    class "MyHashMap<K,V>" as MyHashMap {
+        -hashStrategy: HashStrategy<K>
+        +setHashStrategy(strategy: HashStrategy<K>): void
+    }
+
+    HashStrategy <|.. DefaultHash
+    HashStrategy <|.. DJB2Hash
+    MyHashMap o-- HashStrategy : uses
+}
+
+note bottom of HashStrategy
+  **Strategy Pattern**
+  Encapsulates hash algorithm
+  Allows runtime swapping
+  Easy testing with mock strategies
+end note
+
+' ===== FACTORY METHOD PATTERN =====
+package "Factory Method Pattern (User)" {
+    abstract class "User" as User {
+        +{static} create(type: UserType, username: String): User
+        +{abstract} hasPermission(permission: Permission): boolean
+    }
+
+    class "AdminUser" as AdminUser {
+        +hasPermission(permission: Permission): boolean
+    }
+
+    class "DeveloperUser" as DeveloperUser {
+        +hasPermission(permission: Permission): boolean
+    }
+
+    class "ViewerUser" as ViewerUser {
+        +hasPermission(permission: Permission): boolean
+    }
+
+    User <|-- AdminUser
+    User <|-- DeveloperUser
+    User <|-- ViewerUser
+}
+
+note bottom of User
+  **Factory Method Pattern**
+  User.create() encapsulates
+  creation of appropriate subtype.
+  Caller uses UserType enum,
+  not concrete classes.
+end note
+
+' ===== DECORATOR PATTERN =====
+package "Decorator Pattern (CachingHashMap)" {
+    interface "MyMap<K,V>" as MyMap {
+        +put(key: K, value: V): Optional<V>
+        +get(key: K): Optional<V>
+        +remove(key: K): Optional<V>
+    }
+
+    class "MyHashMap<K,V>" as HashMap {
+        -buckets: MyList<MapEntry<K,V>>[]
+        +put(key: K, value: V): Optional<V>
+        +get(key: K): Optional<V>
+    }
+
+    class "CachingHashMap<K,V>" as CachingHashMap {
+        -backing: MyMap<K,V>
+        -cache: Map<K,V>
+        -maxCacheSize: int
+        -cacheHits: long
+        -cacheMisses: long
+        __
+        +put(key: K, value: V): Optional<V>
+        +get(key: K): Optional<V>
+        +getCacheHits(): long
+        +getCacheMisses(): long
+        +getHitRatio(): double
+    }
+
+    MyMap <|.. HashMap
+    MyMap <|.. CachingHashMap
+    CachingHashMap o-- MyMap : wraps
+}
+
+note bottom of CachingHashMap
+  **Decorator Pattern**
+  Adds LRU caching behavior
+  without modifying MyHashMap.
+  Same interface, enhanced functionality.
+  Can stack multiple decorators.
+end note
+
+' ===== PATTERN COMPARISON =====
+note as PatternComparison
+  **Pattern Comparison**
+
+  | Pattern | Intent | Phase 2 Usage |
+  |---------|--------|---------------|
+  | Strategy | Swap algorithms at runtime | HashStrategy for hash functions |
+  | Factory Method | Encapsulate object creation | User.create() for user types |
+  | Decorator | Add behavior dynamically | CachingHashMap wraps MyMap |
+
+  **When to Use Each:**
+  • Strategy: Multiple algorithms, same interface
+  • Factory Method: Complex creation logic, hide subclasses
+  • Decorator: Add features without modification
+end note
+
+@enduml

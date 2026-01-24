@@ -1,0 +1,97 @@
+@startuml MyArrayList
+
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+skinparam shadowing false
+
+title MyArrayList - Class Diagram
+
+interface "Iterable<T>" as Iterable {
+    +iterator(): Iterator<T>
+}
+
+interface "MyList<T>" as MyList {
+    +add(element: T): void
+    +add(index: int, element: T): void
+    +get(index: int): T
+    +set(index: int, element: T): T
+    +remove(index: int): T
+    +size(): int
+    +isEmpty(): boolean
+    +clear(): void
+    +contains(element: T): boolean
+    +indexOf(element: T): int
+    +toArray(): Object[]
+}
+
+class "MyArrayList<T>" as MyArrayList {
+    -DEFAULT_CAPACITY: int = 10
+    -elements: T[]
+    -size: int
+    -modCount: int
+    __
+    +MyArrayList()
+    +MyArrayList(initialCapacity: int)
+    ..
+    +add(element: T): void
+    +add(index: int, element: T): void
+    +get(index: int): T
+    +set(index: int, element: T): T
+    +remove(index: int): T
+    +size(): int
+    +isEmpty(): boolean
+    +clear(): void
+    +contains(element: T): boolean
+    +indexOf(element: T): int
+    +toArray(): Object[]
+    +iterator(): Iterator<T>
+    ..
+    -ensureCapacity(): void
+    -checkBounds(index: int): void
+    -checkBoundsForAdd(index: int): void
+}
+
+class "MyArrayListIterator" as Iterator {
+    -currentIndex: int
+    -lastReturnedIndex: int
+    -expectedModCount: int
+    __
+    +hasNext(): boolean
+    +next(): T
+    +remove(): void
+}
+
+interface "Iterator<T>" as JavaIterator {
+    +hasNext(): boolean
+    +next(): T
+    +remove(): void
+}
+
+Iterable <|.. MyList
+MyList <|.. MyArrayList
+MyArrayList +-- Iterator : inner class
+JavaIterator <|.. Iterator
+
+note right of MyArrayList::elements
+  Backing array that stores elements.
+  Capacity = elements.length
+  May contain nulls after 'size'
+end note
+
+note right of MyArrayList::modCount
+  Tracks structural modifications
+  for fail-fast iteration
+end note
+
+note bottom of MyArrayList
+  **Key Operations:**
+  • get(i): O(1) - direct array access
+  • add(e): O(1) amortized - resize doubles capacity
+  • add(i,e): O(n) - shifts elements right
+  • remove(i): O(n) - shifts elements left
+
+  **Memory:**
+  ~48 bytes overhead + 8 bytes per slot
+end note
+
+@enduml
