@@ -31,7 +31,7 @@ public class DJB2HashStrategy implements HashStrategy<String> {
     for (int i = 0; i < key.length(); i++) {
       char c = key.charAt(i);
       // hash * 33 + c, using bit shift for speed
-      hash = ((hash << 5) + hash) + c;
+      hash = (hash << 5) + hash + c;
     }
 
     return (int) (Math.abs(hash) % capacity);

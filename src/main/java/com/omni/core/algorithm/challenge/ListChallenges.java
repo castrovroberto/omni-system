@@ -963,25 +963,24 @@ public final class ListChallenges {
 
   @SuppressWarnings("unchecked")
   private static <T> MyList<T> mergeSort(MyList<T> list, Comparator<T> comparator) {
-    if (list.size() <= 1) {
-      MyList<T> result = new MyArrayList<>();
-      if (list.size() == 1) {
-        result.add(list.get(0));
+    int n = list.size();
+    if (n <= 1) {
+      MyList<T> singleton = new MyArrayList<>();
+      if (n == 1) {
+        singleton.add(list.get(0));
       }
-      return result;
+      return singleton;
     }
 
-    int mid = list.size() / 2;
-
-    // Split into two halves
+    int mid = n / 2;
     MyList<T> left = new MyArrayList<>();
     MyList<T> right = new MyArrayList<>();
-
-    for (int i = 0; i < mid; i++) {
-      left.add(list.get(i));
-    }
-    for (int i = mid; i < list.size(); i++) {
-      right.add(list.get(i));
+    for (int i = 0; i < n; i++) {
+      if (i < mid) {
+        left.add(list.get(i));
+      } else {
+        right.add(list.get(i));
+      }
     }
 
     // Recursively sort both halves

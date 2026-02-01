@@ -1,6 +1,5 @@
 package com.omni.core.map;
 
-import com.omni.core.list.MyArrayList;
 import com.omni.core.list.MyLinkedList;
 import com.omni.core.list.MyList;
 import com.omni.core.map.hash.DefaultHashStrategy;
@@ -193,9 +192,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     return get(key).isPresent() || (get(key).isEmpty() && hasNullValueForKey(key));
   }
 
-  /**
-   * Helper to check if key exists with null value.
-   */
+  /** Helper to check if key exists with null value. */
   private boolean hasNullValueForKey(K key) {
     int index = getBucketIndex(key);
     MyList<MapEntry<K, V>> bucket = buckets[index];
@@ -328,30 +325,22 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
 
   // ==================== Private Helper Methods ====================
 
-  /**
-   * Returns the bucket index for the given key.
-   */
+  /** Returns the bucket index for the given key. */
   private int getBucketIndex(K key) {
     return hashStrategy.hash(key, buckets.length);
   }
 
-  /**
-   * Compares two keys for equality, handling nulls.
-   */
+  /** Compares two keys for equality, handling nulls. */
   private boolean keysEqual(K k1, K k2) {
     return k1 == null ? k2 == null : k1.equals(k2);
   }
 
-  /**
-   * Compares two values for equality, handling nulls.
-   */
+  /** Compares two values for equality, handling nulls. */
   private boolean valuesEqual(V v1, V v2) {
     return v1 == null ? v2 == null : v1.equals(v2);
   }
 
-  /**
-   * Doubles the capacity and rehashes all entries.
-   */
+  /** Doubles the capacity and rehashes all entries. */
   @SuppressWarnings("unchecked")
   private void resize() {
     int oldCapacity = buckets.length;
@@ -379,9 +368,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     }
   }
 
-  /**
-   * Returns a power of two size for the given target capacity.
-   */
+  /** Returns a power of two size for the given target capacity. */
   private static int tableSizeFor(int cap) {
     int n = cap - 1;
     n |= n >>> 1;
@@ -394,9 +381,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
 
   // ==================== Inner Classes ====================
 
-  /**
-   * A map entry holding key and value.
-   */
+  /** A map entry holding key and value. */
   private static class MapEntry<K, V> implements Entry<K, V> {
     final K key;
     V value;
@@ -422,9 +407,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     }
   }
 
-  /**
-   * Base iterator for traversing all entries.
-   */
+  /** Base iterator for traversing all entries. */
   private abstract class HashIterator<T> implements Iterator<T> {
     private int bucketIndex;
     private Iterator<MapEntry<K, V>> bucketIterator;

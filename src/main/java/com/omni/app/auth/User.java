@@ -136,6 +136,7 @@ public abstract class User {
 
   @Override
   public String toString() {
-    return String.format("%s[username=%s, type=%s]", getClass().getSimpleName(), username, getType());
+    return String.format(
+        "%s[username=%s, type=%s]", getClass().getSimpleName(), username, getType());
   }
 }

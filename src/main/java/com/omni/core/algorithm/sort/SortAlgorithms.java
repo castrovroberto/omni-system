@@ -2,6 +2,7 @@ package com.omni.core.algorithm.sort;
 
 import com.omni.core.list.MyArrayList;
 import com.omni.core.list.MyList;
+import com.omni.core.tree.MyHeap;
 import java.util.Comparator;
 
 /**
@@ -244,9 +245,7 @@ public final class SortAlgorithms {
     // Median is at 'mid'
   }
 
-  /**
-   * Insertion sort for small subarrays - faster than quicksort for n < 10.
-   */
+  /** Insertion sort for small subarrays - faster than quicksort for n < 10. */
   private static <T> void insertionSort(
       MyList<T> list, int low, int high, Comparator<T> comparator) {
     for (int i = low + 1; i <= high; i++) {
@@ -263,9 +262,7 @@ public final class SortAlgorithms {
 
   // ==================== Helper Methods ====================
 
-  /**
-   * Compares two elements using the comparator, or natural ordering if comparator is null.
-   */
+  /** Compares two elements using the comparator, or natural ordering if comparator is null. */
   @SuppressWarnings("unchecked")
   private static <T> int compare(T a, T b, Comparator<T> comparator) {
     if (comparator != null) {
@@ -274,15 +271,55 @@ public final class SortAlgorithms {
     return ((Comparable<T>) a).compareTo(b);
   }
 
-  /**
-   * Swaps two elements in the list.
-   */
+  /** Swaps two elements in the list. */
   private static <T> void swap(MyList<T> list, int i, int j) {
     if (i != j) {
       T temp = list.get(i);
       list.set(i, list.get(j));
       list.set(j, temp);
     }
+  }
+
+  // ==================== Heap Sort ====================
+
+  /**
+   * Sorts the given list using heap sort algorithm.
+   *
+   * <p>Builds a min-heap from the list, then repeatedly extracts the root to produce a sorted
+   * sequence.
+   *
+   * <p><b>Complexity:</b>
+   *
+   * <ul>
+   *   <li>Time: O(n log n) - guaranteed for all cases
+   *   <li>Space: O(n) - for the heap structure
+   * </ul>
+   *
+   * <p><b>Stability:</b> Unstable - equal elements may be reordered.
+   *
+   * @param <T> the type of elements in the list
+   * @param list the list to sort (modified in-place)
+   * @param comparator the comparator to determine order
+   */
+  public static <T> void heapSort(MyList<T> list, Comparator<T> comparator) {
+    if (list == null || list.size() <= 1) {
+      return;
+    }
+    MyHeap<T> heap = MyHeap.heapify(list, comparator);
+    for (int i = 0; i < list.size(); i++) {
+      list.set(i, heap.extractRoot());
+    }
+  }
+
+  /**
+   * Sorts using natural ordering with heap sort.
+   *
+   * @param <T> the type of elements, must be Comparable
+   * @param list the list to sort
+   */
+  @SuppressWarnings("unchecked")
+  public static <T extends Comparable<T>> void heapSort(MyList<T> list) {
+    heapSort(list, (a, b) -> ((Comparable<T>) a).compareTo(b));
   }
 
   // ==================== Analysis Methods ====================

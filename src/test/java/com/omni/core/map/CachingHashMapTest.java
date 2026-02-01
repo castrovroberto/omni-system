@@ -266,7 +266,8 @@ class CachingHashMapTest {
     @Test
     @DisplayName("Rejects cache size less than 1")
     void rejectsCacheSizeLessThan1() {
-      assertThrows(IllegalArgumentException.class, () -> new CachingHashMap<>(new MyHashMap<>(), 0));
+      assertThrows(
+          IllegalArgumentException.class, () -> new CachingHashMap<>(new MyHashMap<>(), 0));
       assertThrows(
           IllegalArgumentException.class, () -> new CachingHashMap<>(new MyHashMap<>(), -1));
     }

@@ -43,8 +43,7 @@ public class SessionStore {
   /**
    * Retrieves a session by its token.
    *
-   * <p>If the session exists but is expired, it is automatically invalidated and empty is
-   * returned.
+   * <p>If the session exists but is expired, it is automatically invalidated and empty is returned.
    *
    * @param token the session token
    * @return the session if found and valid, empty otherwise

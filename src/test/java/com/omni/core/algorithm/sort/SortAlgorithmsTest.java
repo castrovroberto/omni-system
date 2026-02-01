@@ -382,6 +382,88 @@ class SortAlgorithmsTest {
     }
   }
 
+  // ==================== Heap Sort Tests ====================
+
+  @Nested
+  @DisplayName("Heap Sort Tests")
+  class HeapSortTests {
+
+    @Test
+    @DisplayName("Sorts empty list")
+    void heapSort_emptyList_unchanged() {
+      SortAlgorithms.heapSort(list, null);
+      assertTrue(list.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Sorts single element")
+    void heapSort_singleElement_unchanged() {
+      list.add(42);
+      SortAlgorithms.heapSort(list, null);
+      assertEquals(1, list.size());
+      assertEquals(42, list.get(0));
+    }
+
+    @Test
+    @DisplayName("Sorts random list")
+    void heapSort_randomList_sorted() {
+      list = createList(3, 1, 4, 1, 5, 9, 2, 6, 5, 3);
+      SortAlgorithms.heapSort(list, Comparator.naturalOrder());
+      assertTrue(SortAlgorithms.isSorted(list, null));
+    }
+
+    @Test
+    @DisplayName("Sorts reverse sorted list")
+    void heapSort_reverseSorted_sorted() {
+      list = createList(5, 4, 3, 2, 1);
+      SortAlgorithms.heapSort(list, Comparator.naturalOrder());
+      assertTrue(SortAlgorithms.isSorted(list, null));
+      assertEquals(1, list.get(0));
+      assertEquals(5, list.get(4));
+    }
+
+    @Test
+    @DisplayName("Handles duplicates")
+    void heapSort_withDuplicates_sorted() {
+      list = createList(3, 1, 2, 1, 3, 2);
+      SortAlgorithms.heapSort(list, Comparator.naturalOrder());
+      assertTrue(SortAlgorithms.isSorted(list, null));
+      assertEquals(6, list.size());
+    }
+
+    @Test
+    @DisplayName("Uses custom comparator for reverse order")
+    void heapSort_customComparator_sorted() {
+      list = createList(1, 5, 3, 2, 4);
+      SortAlgorithms.heapSort(list, Comparator.reverseOrder());
+      assertEquals(5, list.get(0));
+      assertEquals(1, list.get(4));
+    }
+
+    @Test
+    @DisplayName("Works with natural ordering")
+    void heapSort_naturalOrdering_works() {
+      MyList<String> strings = new MyArrayList<>();
+      strings.add("banana");
+      strings.add("apple");
+      strings.add("cherry");
+
+      SortAlgorithms.heapSort(strings);
+
+      assertEquals("apple", strings.get(0));
+      assertEquals("banana", strings.get(1));
+      assertEquals("cherry", strings.get(2));
+    }
+
+    @Test
+    @DisplayName("Sorts large list")
+    void heapSort_largeList_sorted() {
+      list = createRandomList(10000);
+      SortAlgorithms.heapSort(list, Comparator.naturalOrder());
+      assertTrue(SortAlgorithms.isSorted(list, null));
+    }
+  }
+
   // ==================== Comparison Tests ====================
 
   @Nested
@@ -389,25 +471,30 @@ class SortAlgorithmsTest {
   class ComparisonTests {
 
     @Test
-    @DisplayName("Both algorithms produce same result")
-    void bothAlgorithms_sameResult() {
+    @DisplayName("All algorithms produce same result")
+    void allAlgorithms_sameResult() {
       MyList<Integer> list1 = createList(3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5);
       MyList<Integer> list2 = createList(3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5);
+      MyList<Integer> list3 = createList(3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5);
 
       SortAlgorithms.mergeSort(list1, null);
       SortAlgorithms.quickSort(list2, null);
+      SortAlgorithms.heapSort(list3, Comparator.naturalOrder());
 
       assertEquals(list1.size(), list2.size());
+      assertEquals(list1.size(), list3.size());
       for (int i = 0; i < list1.size(); i++) {
         assertEquals(list1.get(i), list2.get(i));
+        assertEquals(list1.get(i), list3.get(i));
       }
     }
 
     @Test
-    @DisplayName("Both handle null list")
-    void bothAlgorithms_handleNullList() {
+    @DisplayName("All handle null list")
+    void allAlgorithms_handleNullList() {
       assertDoesNotThrow(() -> SortAlgorithms.mergeSort(null, null));
       assertDoesNotThrow(() -> SortAlgorithms.quickSort(null, null));
+      assertDoesNotThrow(() -> SortAlgorithms.heapSort(null, null));
     }
   }
 
