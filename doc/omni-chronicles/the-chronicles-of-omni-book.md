@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
 
 # ⚔️ The Chronicles of Omni ⚔️
 
@@ -486,4 +486,3 @@ The Architect smiled, remembering the day they ripped the Lists out of the Direc
 *A Memory Palace by the Architect*
 
 </div>
-]]>
