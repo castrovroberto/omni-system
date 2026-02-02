@@ -8,7 +8,7 @@
 
 ---
 
-![The Complete Saga - An Overview](/Users/robertocastro/dev/omni-system/doc/omni-chronicles/Gemini_Generated_Image_nfuc5knfuc5knfuc.png)
+![The Complete Saga - An Overview](Gemini_Generated_Image_nfuc5knfuc5knfuc.png)
 
 ---
 
@@ -38,7 +38,7 @@
 
 </div>
 
-![The Architect confronts the Memory Spectre across the chaotic Heap](/Users/robertocastro/dev/omni-system/doc/omni-chronicles/Gemini_Generated_Image_4a0bab4a0bab4a0b.png)
+![The Architect confronts the Memory Spectre across the chaotic Heap](Gemini_Generated_Image_4a0bab4a0bab4a0b.png)
 
 ---
 
@@ -70,7 +70,7 @@ To build a civilization, you first had to tame the chaos.
 
 </div>
 
-![Era 1: The Iron Container and the Chain of References](/Users/robertocastro/dev/omni-system/doc/omni-chronicles/Gemini_Generated_Image_oaopgooaopgooaop.png)
+![Era 1: The Iron Container and the Chain of References](Gemini_Generated_Image_oaopgooaopgooaop.png)
 
 ---
 
@@ -132,7 +132,7 @@ The Scribe was a perfectionist. It refused to etch a record until every detailâ€
 
 </div>
 
-![Era 2: The HashMap, Decorator Cache, and the Sorting Algorithms](/Users/robertocastro/dev/omni-system/doc/omni-chronicles/Gemini_Generated_Image_lt5wy0lt5wy0lt5w.png)
+![Era 2: The HashMap, Decorator Cache, and the Sorting Algorithms](Gemini_Generated_Image_lt5wy0lt5wy0lt5w.png)
 
 ---
 
@@ -198,7 +198,7 @@ Finally, you brought discipline to the chaotic crowds using the **Twin Sorceries
 
 </div>
 
-![Era 3: The VirtualFileSystem, Visitor Pattern, and the Linear Search Beast](/Users/robertocastro/dev/omni-system/doc/omni-chronicles/Gemini_Generated_Image_eed9bleed9bleed9.png)
+![Era 3: The VirtualFileSystem, Visitor Pattern, and the Linear Search Beast](Gemini_Generated_Image_eed9bleed9bleed9.png)
 
 ---
 
@@ -267,7 +267,7 @@ Now, even in a folder of millions, finding a file was instantaneous.
 
 </div>
 
-![Era 4: The Network Graph, Observer Pattern, State Machines, and the Deadlock Serpent](/Users/robertocastro/dev/omni-system/doc/omni-chronicles/Gemini_Generated_Image_nwsq72nwsq72nwsq.png)
+![Era 4: The Network Graph, Observer Pattern, State Machines, and the Deadlock Serpent](Gemini_Generated_Image_nwsq72nwsq72nwsq.png)
 
 ---
 
@@ -327,7 +327,7 @@ You cast the spell of **Topological Sort** (`DependencyResolver`). You mapped th
 
 </div>
 
-![Era 5: The ThreadPool Factory, BlockingQueue, and Heap of Priority](/Users/robertocastro/dev/omni-system/doc/omni-chronicles/Gemini_Generated_Image_ugfuirugfuirugfu.png)
+![Era 5: The ThreadPool Factory, BlockingQueue, and Heap of Priority](Gemini_Generated_Image_ugfuirugfuirugfu.png)
 
 ---
 
@@ -410,7 +410,7 @@ It allowed the whole world to see the count (Read Lock) without stopping, but wh
 
 </div>
 
-![The Architect stands before the Interviewers, the civilization of Omni behind them](/Users/robertocastro/dev/omni-system/doc/omni-chronicles/Gemini_Generated_Image_68okyd68okyd68ok.png)
+![The Architect stands before the Interviewers, the civilization of Omni behind them](Gemini_Generated_Image_68okyd68okyd68ok.png)
 
 ---
 
