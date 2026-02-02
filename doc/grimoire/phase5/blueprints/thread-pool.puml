@@ -1,0 +1,58 @@
+@startuml ThreadPool
+
+skinparam classAttributeIconSize 0
+
+package "com.omni.app.worker" {
+    
+    class ThreadPool {
+        - workers: MyList<WorkerThread>
+        - taskQueue: BlockingQueue<Runnable>
+        - isShutdown: boolean {volatile}
+        + ThreadPool(workerCount: int)
+        + submit(task: Runnable)
+        + submit(task: Task<T>): TaskFuture<T>
+        + shutdown()
+        + getPendingTaskCount(): int
+        + getWorkerCount(): int
+    }
+    
+    class WorkerThread {
+        - taskQueue: BlockingQueue<Runnable>
+        - running: boolean {volatile}
+        + run()
+        + shutdown()
+    }
+    
+    interface Task<T> <<functional>> {
+        + execute(): T
+    }
+    
+    class TaskFuture<T> {
+        - result: T
+        - exception: Exception
+        - done: boolean {volatile}
+        + get(): T
+        + get(timeoutMs: long): T
+        + isDone(): boolean
+        ~ complete(result: T)
+        ~ completeExceptionally(exception: Exception)
+    }
+}
+
+package "com.omni.core.concurrent" {
+    class BlockingQueue<T>
+}
+
+ThreadPool "1" *-- "n" WorkerThread : workers
+ThreadPool "1" *-- "1" BlockingQueue : taskQueue
+WorkerThread --> BlockingQueue : takes from
+ThreadPool ..> Task : accepts
+ThreadPool ..> TaskFuture : returns
+
+note right of ThreadPool
+    Producer-Consumer Pattern
+    - Clients submit tasks (produce)
+    - Workers execute tasks (consume)
+end note
+
+@enduml

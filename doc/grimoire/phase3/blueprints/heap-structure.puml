@@ -1,0 +1,47 @@
+@startuml heap-structure
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+package "com.omni.core.tree" {
+    
+    class MyHeap<T> {
+        - data: MyArrayList<T>
+        - comparator: Comparator<T>
+        --
+        + MyHeap(comparator: Comparator<T>)
+        + {static} natural(): MyHeap<T>
+        + {static} heapify(list, comparator): MyHeap<T>
+        --
+        + insert(value: T): void
+        + extractRoot(): T
+        + peek(): T
+        + size(): int
+        + isEmpty(): boolean
+        --
+        - siftUp(index: int): void
+        - siftDown(index: int): void
+        - swap(i: int, j: int): void
+    }
+    
+}
+
+package "com.omni.core.list" {
+    class MyArrayList<T> <<Phase 1>>
+}
+
+MyHeap --> MyArrayList : uses
+
+note right of MyHeap
+  Array representation:
+  Parent(i) = (i-1)/2
+  Left(i) = 2i+1
+  Right(i) = 2i+2
+  
+        0
+       / \
+      1   2
+     / \ / \
+    3  4 5  6
+end note
+
+@enduml

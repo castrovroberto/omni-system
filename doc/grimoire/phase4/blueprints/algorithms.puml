@@ -1,0 +1,38 @@
+@startuml algorithms
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+class GraphAlgorithms <<utility>> {
+    + {static} dfsRecursive(graph, start): MyList<V>
+    + {static} dfsIterative(graph, start): MyList<V>
+    + {static} bfs(graph, start): MyList<V>
+    + {static} dijkstra(graph, source): MyHashMap<V, Double>
+    + {static} dijkstraPath(graph, source, target): MyList<V>
+    + {static} topologicalSort(graph): MyList<V>
+}
+
+class CycleDetectedException <<exception>>
+
+note right of GraphAlgorithms::dfsRecursive
+  Uses recursion
+  O(V + E)
+end note
+
+note right of GraphAlgorithms::bfs
+  Uses Queue (MyLinkedList)
+  O(V + E)
+end note
+
+note right of GraphAlgorithms::dijkstra
+  Uses MyHeap
+  O((V+E) log V)
+end note
+
+note right of GraphAlgorithms::topologicalSort
+  3-color DFS
+  Throws CycleDetectedException
+end note
+
+GraphAlgorithms ..> CycleDetectedException : throws
+
+@enduml

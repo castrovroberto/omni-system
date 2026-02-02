@@ -1,0 +1,56 @@
+@startuml ProducerConsumer
+
+title Producer-Consumer Pattern with BlockingQueue
+
+participant "Producer\nThread" as P
+participant "BlockingQueue" as Q
+participant "Consumer\nThread" as C
+
+== Normal Flow ==
+
+P -> Q: put(item)
+activate Q
+Q --> P: (added)
+deactivate Q
+
+C -> Q: take()
+activate Q
+Q --> C: item
+deactivate Q
+
+== Queue Empty ==
+
+C -> Q: take()
+activate Q
+note right of Q: Queue empty\nConsumer waits
+Q -> C: wait()
+activate C #LightGray
+
+P -> Q: put(item)
+Q -> C: notifyAll()
+deactivate C
+Q --> C: item
+deactivate Q
+
+== Queue Full ==
+
+P -> Q: put(item1)
+activate Q
+Q --> P: (added)
+deactivate Q
+
+P -> Q: put(item2)
+activate Q
+note right of Q: Queue at capacity\nProducer waits
+Q -> P: wait()
+activate P #LightGray
+
+C -> Q: take()
+Q -> P: notifyAll()
+deactivate P
+Q --> C: item1
+deactivate Q
+
+P -> Q: (continues put)
+
+@enduml

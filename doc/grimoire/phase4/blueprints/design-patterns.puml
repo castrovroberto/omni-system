@@ -1,0 +1,74 @@
+@startuml design-patterns
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+title Phase 4 Design Patterns
+
+' === OBSERVER PATTERN ===
+package "Observer Pattern" {
+    interface ServiceObserver {
+        + onServiceStateChanged(server, state): void
+    }
+    
+    class Server {
+        - observers: MyList<ServiceObserver>
+        + addObserver(o): void
+        + removeObserver(o): void
+        - notifyObservers(): void
+    }
+    
+    class ServiceMonitor
+    
+    ServiceObserver <|.. ServiceMonitor
+    Server --> "*" ServiceObserver
+}
+
+' === STATE PATTERN ===
+package "State Pattern" {
+    interface ServerState {
+        + start(server): void
+        + stop(server): void
+        + crash(server): void
+    }
+    
+    class BootingState
+    class RunningState
+    class StoppingState
+    class CrashedState
+    
+    class "Server" as Server2 {
+        - state: ServerState
+        + setState(state): void
+    }
+    
+    ServerState <|.. BootingState
+    ServerState <|.. RunningState
+    ServerState <|.. StoppingState
+    ServerState <|.. CrashedState
+    Server2 --> ServerState
+}
+
+' === MEDIATOR PATTERN ===
+package "Mediator Pattern" {
+    interface NetworkMediator {
+        + notify(sender, event): void
+    }
+    
+    class ServiceMediator {
+        - services: MyList<ServiceNode>
+        + register(service): void
+        + notify(sender, event): void
+    }
+    
+    class ServiceNode {
+        - mediator: NetworkMediator
+        + send(event): void
+        + receive(event): void
+    }
+    
+    NetworkMediator <|.. ServiceMediator
+    ServiceMediator --> "*" ServiceNode
+    ServiceNode --> NetworkMediator
+}
+
+@enduml

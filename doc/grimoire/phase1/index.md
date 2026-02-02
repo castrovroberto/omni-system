@@ -61,7 +61,15 @@ UML diagrams for visual reference.
 | [Log System](blueprints/log-system.puml) | Component relationships and patterns |
 | [Search Algorithms](blueprints/search-algorithms.puml) | Utility class structure |
 
----
+### Patterns
+
+Design pattern deep-dives.
+
+| Pattern | Documentation |
+|---------|---------------|
+| [Iterator](patterns/iterator.md) | Traverse collections without exposing internals |
+| [Builder](patterns/builder.md) | Construct complex objects step-by-step |
+| [Singleton](patterns/singleton.md) | Ensure single global instance |
 
 ## Components Built
 

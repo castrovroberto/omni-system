@@ -1,0 +1,59 @@
+@startuml file-system
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+package "com.omni.app.fs" {
+    
+    interface FileSystemNode {
+        + getName(): String
+        + getSize(): long
+        + isDirectory(): boolean
+        + accept(visitor: FileSystemVisitor): void
+    }
+    
+    class FileNode {
+        - name: String
+        - size: long
+        --
+        + getName(): String
+        + getSize(): long
+        + isDirectory(): boolean
+        + accept(visitor): void
+    }
+    
+    class DirectoryNode {
+        - name: String
+        - children: MyList<FileSystemNode>
+        --
+        + getName(): String
+        + getSize(): long
+        + isDirectory(): boolean
+        + accept(visitor): void
+        + addChild(node): void
+        + getChildren(): MyList<FileSystemNode>
+    }
+    
+    class VirtualFileSystem {
+        - root: DirectoryNode
+        - index: FileIndex
+        --
+        + mkdir(path: String): void
+        + createFile(path, size): void
+        + delete(path: String): void
+        + get(path: String): FileSystemNode
+        + getRoot(): DirectoryNode
+    }
+    
+    FileSystemNode <|.. FileNode
+    FileSystemNode <|.. DirectoryNode
+    DirectoryNode o--> "*" FileSystemNode : children
+    VirtualFileSystem --> DirectoryNode : root
+}
+
+note bottom of FileSystemNode
+  Composite Pattern:
+  Uniform interface for
+  files and directories
+end note
+
+@enduml

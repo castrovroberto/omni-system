@@ -1,0 +1,65 @@
+@startuml design-patterns
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+title Phase 3 Design Patterns
+
+' === COMPOSITE PATTERN ===
+package "Composite Pattern" {
+    interface FileSystemNode {
+        + getSize(): long
+        + accept(visitor): void
+    }
+    
+    class FileNode <<leaf>>
+    class DirectoryNode <<composite>> {
+        + children: List<FileSystemNode>
+    }
+    
+    FileSystemNode <|.. FileNode
+    FileSystemNode <|.. DirectoryNode
+    DirectoryNode o--> "*" FileSystemNode
+}
+
+' === COMMAND PATTERN ===
+package "Command Pattern" {
+    interface Job {
+        + execute(): void
+        + undo(): void
+        + getPriority(): int
+    }
+    
+    class CreateFileJob
+    class DeleteFileJob
+    
+    class JobScheduler {
+        - queue: MyHeap<Job>
+        + schedule(job): void
+        + executeNext(): void
+    }
+    
+    Job <|.. CreateFileJob
+    Job <|.. DeleteFileJob
+    JobScheduler o--> "*" Job : schedules
+}
+
+' === VISITOR PATTERN ===
+package "Visitor Pattern" {
+    interface FileSystemVisitor {
+        + visitFile(FileNode): void
+        + visitDirectory(DirectoryNode): void
+    }
+    
+    class DiskUsageVisitor {
+        - totalBytes: long
+        + getTotalBytes(): long
+    }
+    
+    FileSystemVisitor <|.. DiskUsageVisitor
+}
+
+' Connections between patterns
+FileSystemNode ..> FileSystemVisitor : accept()
+JobScheduler ..> FileSystemNode : operates on
+
+@enduml

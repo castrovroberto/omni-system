@@ -1,0 +1,68 @@
+@startuml tree-structures
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+package "com.omni.core.tree" {
+    
+    class BinarySearchTree<T extends Comparable<T>> {
+        - root: Node<T>
+        - size: int
+        --
+        + insert(value: T): void
+        + find(value: T): Optional<T>
+        + delete(value: T): Optional<T>
+        + min(): Optional<T>
+        + max(): Optional<T>
+        + height(): int
+        + size(): int
+        --
+        + inOrder(): MyList<T>
+        + preOrder(): MyList<T>
+        + postOrder(): MyList<T>
+        + levelOrder(): MyList<T>
+        + inOrderIterative(): MyList<T>
+    }
+    
+    class "Node<T>" as Node {
+        # value: T
+        # left: Node<T>
+        # right: Node<T>
+    }
+    
+    class AVLTree<T extends Comparable<T>> {
+        --
+        + insert(value: T): void
+        - insertAvl(node, value): Node<T>
+        # deleteRecursive(node, value): Node<T>
+        --
+        - getHeight(node): int
+        - updateHeight(node): void
+        - balanceFactor(node): int
+        - rotateRight(node): Node<T>
+        - rotateLeft(node): Node<T>
+        - rotateLeftRight(node): Node<T>
+        - rotateRightLeft(node): Node<T>
+        - rebalance(node): Node<T>
+    }
+    
+    class "AVLNode<T>" as AVLNode {
+        # height: int
+    }
+    
+    BinarySearchTree <|-- AVLTree
+    BinarySearchTree +-- Node
+    AVLTree +-- AVLNode
+    Node <|-- AVLNode
+}
+
+note right of BinarySearchTree
+  O(log n) average case
+  O(n) worst case (degeneration)
+end note
+
+note right of AVLTree
+  O(log n) guaranteed
+  via rotations
+end note
+
+@enduml

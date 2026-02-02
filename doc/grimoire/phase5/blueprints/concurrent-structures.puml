@@ -1,0 +1,62 @@
+@startuml ConcurrentStructures
+
+skinparam classAttributeIconSize 0
+
+package "com.omni.core.concurrent" {
+    
+    class SynchronizedList<T> {
+        - delegate: MyList<T>
+        - lock: Object
+        + {synchronized} add(element: T)
+        + {synchronized} get(index: int): T
+        + {synchronized} remove(index: int): T
+        + {synchronized} size(): int
+        + getLock(): Object
+        __
+        Note: iterator() NOT synchronized
+    }
+    
+    class BlockingQueue<T> {
+        - queue: MyLinkedList<T>
+        - capacity: int
+        + {synchronized} put(item: T)
+        + {synchronized} take(): T
+        + {synchronized} offer(item: T): boolean
+        + {synchronized} poll(): T
+        __
+        Uses wait()/notifyAll()
+    }
+    
+    class ConcurrentHashMap<K,V> {
+        - delegate: MyMap<K,V>
+        - lock: Object
+        + {synchronized} put(key: K, value: V)
+        + {synchronized} get(key: K): Optional<V>
+        + {synchronized} remove(key: K): Optional<V>
+        + putIfAbsent(key: K, value: V): Optional<V>
+        + remove(key: K, value: V): boolean
+        __
+        Full synchronization
+    }
+}
+
+package "com.omni.core.list" {
+    interface MyList<T>
+}
+
+package "com.omni.core.map" {
+    interface MyMap<K,V>
+}
+
+SynchronizedList ..|> MyList
+SynchronizedList --> MyList : delegates
+
+ConcurrentHashMap ..|> MyMap
+ConcurrentHashMap --> MyMap : delegates
+
+note bottom of BlockingQueue
+    Blocks on put() if full
+    Blocks on take() if empty
+end note
+
+@enduml

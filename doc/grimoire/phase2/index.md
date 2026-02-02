@@ -61,7 +61,15 @@ UML diagrams for visual reference.
 | [Auth Service](blueprints/auth-service.puml) | Component relationships and patterns |
 | [Design Patterns](blueprints/design-patterns.puml) | Strategy, Factory, Decorator patterns |
 
----
+### Patterns
+
+Design pattern deep-dives.
+
+| Pattern | Documentation |
+|---------|---------------|
+| [Strategy](patterns/strategy.md) | Swappable algorithms at runtime |
+| [Factory Method](patterns/factory-method.md) | Create objects without specifying concrete classes |
+| [Decorator](patterns/decorator.md) | Add behavior dynamically via composition |
 
 ## Components Built
 

@@ -1,0 +1,50 @@
+@startuml network-topology
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+package "com.omni.app.network" {
+    
+    class NetworkTopology {
+        - graph: MyGraph<String>
+        + addServer(name): void
+        + connect(a, b, latency): void
+        + getServers(): MyList<String>
+    }
+    
+    class LatencyRouter {
+        - topology: NetworkTopology
+        + findFastestPath(from, to): MyList<String>
+        + getLatency(from, to): double
+    }
+    
+    class DependencyResolver {
+        - dependencies: MyGraph<String>
+        + addDependency(service, dependsOn): void
+        + resolve(): MyList<String>
+    }
+    
+    class Server {
+        - name: String
+        - state: ServerState
+        - observers: MyList<ServiceObserver>
+        + start(): void
+        + stop(): void
+        + crash(): void
+        + addObserver(observer): void
+    }
+    
+    class ServiceMonitor {
+        + onServiceStateChanged(server, state): void
+    }
+}
+
+package "com.omni.core.graph" {
+    interface MyGraph<V> <<Phase 4>>
+    class GraphAlgorithms <<utility>>
+}
+
+NetworkTopology --> MyGraph : uses
+LatencyRouter --> GraphAlgorithms : dijkstra()
+DependencyResolver --> GraphAlgorithms : topologicalSort()
+
+@enduml

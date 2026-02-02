@@ -1,0 +1,58 @@
+@startuml graph-structures
+skinparam classAttributeIconSize 0
+skinparam monochrome true
+
+package "com.omni.core.graph" {
+    
+    interface "MyGraph<V>" as MyGraph {
+        + addVertex(V): void
+        + removeVertex(V): boolean
+        + addEdge(V, V, double): void
+        + removeEdge(V, V): boolean
+        + hasVertex(V): boolean
+        + hasEdge(V, V): boolean
+        + getEdgeWeight(V, V): double
+        + getNeighbors(V): MyList<V>
+        + getEdges(V): MyList<Edge<V>>
+        + getVertices(): MyList<V>
+        + vertexCount(): int
+        + edgeCount(): int
+        + isDirected(): boolean
+    }
+    
+    class AdjacencyListGraph<V> {
+        - adjacencyMap: MyHashMap<V, MyList<Edge<V>>>
+        - directed: boolean
+        - edgeCount: int
+    }
+    
+    class AdjacencyMatrixGraph<V> {
+        - matrix: double[][]
+        - vertexToIndex: MyHashMap<V, Integer>
+        - indexToVertex: MyList<V>
+        - directed: boolean
+    }
+    
+    class "Edge<V>" as Edge <<record>> {
+        + source: V
+        + target: V
+        + weight: double
+    }
+    
+    MyGraph <|.. AdjacencyListGraph
+    MyGraph <|.. AdjacencyMatrixGraph
+    AdjacencyListGraph --> Edge
+    AdjacencyMatrixGraph --> Edge
+}
+
+note bottom of AdjacencyListGraph
+  Space: O(V + E)
+  hasEdge: O(degree)
+end note
+
+note bottom of AdjacencyMatrixGraph
+  Space: O(V²)
+  hasEdge: O(1)
+end note
+
+@enduml
