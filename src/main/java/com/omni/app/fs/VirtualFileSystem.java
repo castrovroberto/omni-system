@@ -7,6 +7,9 @@ import java.util.Optional;
  *
  * <p>Integrates {@link DirectoryNode}, {@link FileIndex}, and navigation to provide a unified API
  * for file system manipulation.
+ *
+ * <p><b>Interview Note:</b> Supports absolute path operations like {@code mkdir -p /a/b/c} which is
+ * a common interview question (LeetCode #588 - Design In-Memory File System).
  */
 public class VirtualFileSystem {
 
@@ -19,6 +22,92 @@ public class VirtualFileSystem {
     this.root = new DirectoryNode("root");
     this.index = new FileIndex();
     this.currentDirectory = root;
+  }
+
+  /**
+   * Resolves an absolute path to a directory node.
+   *
+   * <p>Traverses the path components starting from root. Returns empty if any component doesn't
+   * exist or is not a directory.
+   *
+   * @param path absolute path like "/a/b/c" or relative path like "a/b"
+   * @return the directory at the path, or empty if not found
+   */
+  public Optional<DirectoryNode> resolve(String path) {
+    if (path == null || path.isEmpty()) {
+      return Optional.of(currentDirectory);
+    }
+
+    DirectoryNode current = path.startsWith("/") ? root : currentDirectory;
+    String[] parts = normalizePath(path);
+
+    for (String part : parts) {
+      if (part.isEmpty() || part.equals(".")) {
+        continue;
+      }
+      Optional<FileSystemNode> child = current.getChild(part);
+      if (child.isEmpty() || !child.get().isDirectory()) {
+        return Optional.empty();
+      }
+      current = (DirectoryNode) child.get();
+    }
+    return Optional.of(current);
+  }
+
+  /**
+   * Creates directories along a path, similar to {@code mkdir -p}.
+   *
+   * <p>Creates any intermediate directories that don't exist.
+   *
+   * @param path the path to create, e.g., "/a/b/c"
+   * @return the final directory in the path
+   */
+  public DirectoryNode mkdirp(String path) {
+    if (path == null || path.isEmpty()) {
+      return currentDirectory;
+    }
+
+    DirectoryNode current = path.startsWith("/") ? root : currentDirectory;
+    String[] parts = normalizePath(path);
+
+    for (String part : parts) {
+      if (part.isEmpty() || part.equals(".")) {
+        continue;
+      }
+      Optional<FileSystemNode> child = current.getChild(part);
+      if (child.isPresent()) {
+        if (!child.get().isDirectory()) {
+          throw new IllegalArgumentException("Path component is not a directory: " + part);
+        }
+        current = (DirectoryNode) child.get();
+      } else {
+        DirectoryNode newDir = new DirectoryNode(part);
+        current.addChild(newDir);
+        current = newDir;
+      }
+    }
+    return current;
+  }
+
+  /**
+   * Creates a file at an absolute or relative path.
+   *
+   * <p>Creates intermediate directories if they don't exist.
+   *
+   * @param path the file path, e.g., "/a/b/file.txt"
+   * @param size the file size in bytes
+   * @return the created file
+   */
+  public FileNode createFileAt(String path, long size) {
+    int lastSlash = path.lastIndexOf('/');
+    String dirPath = lastSlash > 0 ? path.substring(0, lastSlash) : "";
+    String fileName = lastSlash >= 0 ? path.substring(lastSlash + 1) : path;
+
+    DirectoryNode dir = dirPath.isEmpty() ? currentDirectory : mkdirp(dirPath);
+    FileNode file = new FileNode(fileName, size);
+    dir.addChild(file);
+    index.add(file);
+    return file;
   }
 
   /**
@@ -42,12 +131,11 @@ public class VirtualFileSystem {
    * @return true if the file was found and deleted
    */
   public boolean deleteFile(String name) {
-    for (FileSystemNode child : currentDirectory.getChildren()) {
-      if (!child.isDirectory() && child.getName().equals(name)) {
-        currentDirectory.removeChild(child);
-        index.remove(name);
-        return true;
-      }
+    Optional<FileSystemNode> child = currentDirectory.getChild(name);
+    if (child.isPresent() && !child.get().isDirectory()) {
+      currentDirectory.removeChild(name);
+      index.remove(name);
+      return true;
     }
     return false;
   }
@@ -71,11 +159,10 @@ public class VirtualFileSystem {
    * @return true if the directory was found and navigation succeeded
    */
   public boolean navigateInto(String name) {
-    for (FileSystemNode child : currentDirectory.getChildren()) {
-      if (child.isDirectory() && child.getName().equals(name)) {
-        currentDirectory = (DirectoryNode) child;
-        return true;
-      }
+    Optional<FileSystemNode> child = currentDirectory.getChild(name);
+    if (child.isPresent() && child.get().isDirectory()) {
+      currentDirectory = (DirectoryNode) child.get();
+      return true;
     }
     return false;
   }
@@ -120,5 +207,11 @@ public class VirtualFileSystem {
    */
   public int indexedFileCount() {
     return index.size();
+  }
+
+  private String[] normalizePath(String path) {
+    // Remove leading slash and split
+    String normalized = path.startsWith("/") ? path.substring(1) : path;
+    return normalized.split("/");
   }
 }

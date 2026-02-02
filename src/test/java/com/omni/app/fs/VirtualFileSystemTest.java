@@ -134,4 +134,116 @@ class VirtualFileSystemTest {
       assertEquals(1810, visitor.getTotalSize());
     }
   }
+
+  @Nested
+  @DisplayName("Path Resolution Tests")
+  class PathResolutionTests {
+
+    @Test
+    @DisplayName("resolve empty path returns current directory")
+    void resolve_emptyPath_returnsCurrent() {
+      assertTrue(vfs.resolve("").isPresent());
+      assertEquals(vfs.getCurrentDirectory(), vfs.resolve("").get());
+    }
+
+    @Test
+    @DisplayName("resolve null path returns current directory")
+    void resolve_nullPath_returnsCurrent() {
+      assertTrue(vfs.resolve(null).isPresent());
+      assertEquals(vfs.getCurrentDirectory(), vfs.resolve(null).get());
+    }
+
+    @Test
+    @DisplayName("resolve absolute path from root")
+    void resolve_absolutePath_traversesFromRoot() {
+      vfs.mkdirp("/a/b/c");
+
+      assertTrue(vfs.resolve("/a").isPresent());
+      assertEquals("a", vfs.resolve("/a").get().getName());
+      assertTrue(vfs.resolve("/a/b").isPresent());
+      assertEquals("b", vfs.resolve("/a/b").get().getName());
+      assertTrue(vfs.resolve("/a/b/c").isPresent());
+      assertEquals("c", vfs.resolve("/a/b/c").get().getName());
+    }
+
+    @Test
+    @DisplayName("resolve non-existing path returns empty")
+    void resolve_nonExisting_returnsEmpty() {
+      assertFalse(vfs.resolve("/does/not/exist").isPresent());
+    }
+
+    @Test
+    @DisplayName("resolve path with file component returns empty")
+    void resolve_fileInPath_returnsEmpty() {
+      vfs.createFile("file.txt", 100);
+      assertFalse(vfs.resolve("/file.txt/child").isPresent());
+    }
+
+    @Test
+    @DisplayName("mkdirp creates intermediate directories")
+    void mkdirp_createsIntermediates() {
+      DirectoryNode deep = vfs.mkdirp("/var/log/app");
+
+      assertEquals("app", deep.getName());
+      assertTrue(vfs.resolve("/var").isPresent());
+      assertTrue(vfs.resolve("/var/log").isPresent());
+      assertTrue(vfs.resolve("/var/log/app").isPresent());
+    }
+
+    @Test
+    @DisplayName("mkdirp with existing path reuses directories")
+    void mkdirp_existingPath_reuses() {
+      vfs.mkdirp("/a/b");
+      vfs.mkdirp("/a/c");
+
+      assertEquals(1, vfs.getRoot().getChildCount()); // Only "a"
+      assertEquals(2, vfs.resolve("/a").get().getChildCount()); // "b" and "c"
+    }
+
+    @Test
+    @DisplayName("mkdirp empty path returns current")
+    void mkdirp_emptyPath_returnsCurrent() {
+      assertEquals(vfs.getCurrentDirectory(), vfs.mkdirp(""));
+    }
+
+    @Test
+    @DisplayName("mkdirp throws if file blocks path")
+    void mkdirp_fileBlocks_throws() {
+      vfs.createFile("blocker", 100);
+      assertThrows(IllegalArgumentException.class, () -> vfs.mkdirp("/blocker/sub"));
+    }
+
+    @Test
+    @DisplayName("createFileAt creates file with path")
+    void createFileAt_createsWithPath() {
+      FileNode file = vfs.createFileAt("/config/app/settings.json", 50);
+
+      assertEquals("settings.json", file.getName());
+      assertTrue(vfs.findFile("settings.json").isPresent());
+      assertTrue(vfs.resolve("/config/app").isPresent());
+    }
+
+    @Test
+    @DisplayName("createFileAt in current directory")
+    void createFileAt_noDirPath_usesCurrentDir() {
+      FileNode file = vfs.createFileAt("simple.txt", 10);
+
+      assertEquals("simple.txt", file.getName());
+      assertEquals(1, vfs.getCurrentDirectory().getChildCount());
+    }
+
+    @Test
+    @DisplayName("deleteFile of directory returns false")
+    void deleteFile_directory_returnsFalse() {
+      vfs.createDirectory("subdir");
+      assertFalse(vfs.deleteFile("subdir"));
+    }
+
+    @Test
+    @DisplayName("navigateInto file returns false")
+    void navigateInto_file_returnsFalse() {
+      vfs.createFile("file.txt", 100);
+      assertFalse(vfs.navigateInto("file.txt"));
+    }
+  }
 }

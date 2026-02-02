@@ -8,6 +8,8 @@ The Grimoire is your guide through the Omni-System implementation. Each phase bu
 
 ## Navigation
 
+> **📋 [Interview Preparation Guide](interview-prep.md)** — Connect your code to common interview questions
+
 ### Phase 1: Foundation
 *Linear data structures and object creation patterns*
 
